@@ -27,29 +27,29 @@
 #define DEVICE_PATH "/dev/gpp_data_bus" /**< Path to device data bus */
 
 /* SPRITES */
-#define FROG_FRONT "frog-front"
-#define FROG_BACK "frog-back"
+#define FROG_FRONT 10
+#define FROG_BACK 11
 
-#define CAR_RED "car-red"
-#define CAR_YELLOW "car-yellow"
+#define CAR_RED 20
+#define CAR_YELLOW 21
 
-#define LILYPAD_1 "lilypad1"
-#define LILYPAD_2 "lilypad1"
+#define LILYPAD_1 30
+#define LILYPAD_2 31
 
-#define TRUCK_FRONT "truck-f"
-#define TRUCK_BACK "truck-b"
+#define TRUCK_FRONT 40
+#define TRUCK_BACK 41
 
-#define TRUNK_TREE_FRONT "truck-f"
-#define TRUNK_TREE_MIDDLE "truck-m"
-#define TRUNK_TREE_BACK "truck-b"
+#define TRUNK_TREE_FRONT 50
+#define TRUNK_TREE_MIDDLE 51
+#define TRUNK_TREE_BACK 52
 
-#define A_font "a-font"
-#define C_font "c-font"
-#define H_font "h-font"
-#define K_font "k-font"
-#define O_font "o-font"
-#define R_font "r-font"
-#define S_font "s-font"
-#define U_font "u-font"
+#define A_font 60
+#define C_font 61
+#define H_font 62
+#define K_font 63
+#define O_font 64
+#define R_font 65
+#define S_font 66
+#define U_font 67
 
 #endif  // !UI_H_
