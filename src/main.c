@@ -13,7 +13,14 @@
 //-------------------------------------------------------------
 
 int main(void) {
+  set_game_sprite();
 
-  set
+  sprite_fixed_t frog;
+  frog.ativo = 1;
+  frog.coord_x = 100;
+  frog.coord_y = 100;
+  frog.data_register = 1;
+  frog.offset = 0;
+
   return 0;
 }
