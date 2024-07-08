@@ -123,6 +123,6 @@ void clean_polygon();
 
 void clean_background();
 
-sprite_fixed_t set_new_sprite(u16_t sprite_offset);
+void set_game_sprite(u16_t sprite_offset);
 
 void draw_picture();

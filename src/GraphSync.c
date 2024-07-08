@@ -200,7 +200,7 @@ void clean_background() {
   }
 }
 
-sprite_fixed_t set_game_sprites() {
+void set_game_sprites() {
   char sprite_name;
   u8_t sprite_offset;
 
