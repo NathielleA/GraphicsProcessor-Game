@@ -17,10 +17,10 @@ build: build/dir build/main
 build/dir:
 	@mkdir -p build
 
-build/main: build/GraphSync.o build/main.o 
-	@gcc build/GraphSync.o build/main.o -o build/main
+build/main: build/GraphSync.o build/main.o build/NewSprites.o 
+	@gcc build/GraphSync.o build/main.o build/NewSprites.o  -o build/main
 
-build/GraphSync.o:  GraphSync.c  GraphSync.h utils/ui.h  utils/types.h
+build/GraphSync.o:  GraphSync.c  GraphSync.h  NewSprites.c  NewSprites.h  utils/ui.h  utils/types.h
 	@gcc -c  GraphSync.c -o build/GraphSync.o -Isrc -Iutils
 
 build/NewSprites.o:  NewSprites.c NewSprites.h utils/ui.h  utils/types.h
