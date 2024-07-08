@@ -20,7 +20,6 @@ build/dir:
 build/main: build/GraphSync.o build/main.o 
 	@gcc build/GraphSync.o build/main.o -o build/main
 
-
 build/GraphSync.o:  GraphSync.c  GraphSync.h utils/ui.h  utils/types.h
 	@gcc -c  GraphSync.c -o build/GraphSync.o -Isrc -Iutils
 
