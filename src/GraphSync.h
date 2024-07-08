@@ -123,6 +123,6 @@ void clean_polygon();
 
 void clean_background();
 
-void set_game_sprite();
+void set_game_sprites();
 
 void draw_picture();
