@@ -1,3 +1,5 @@
+#include "NewSprites.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -88,52 +90,42 @@ u8_t select_sprite(char sprite_name, u8_t pixel_data[400][3]) {
     pixel_data = pixel_data_frog_f;
 
   } else if (sprite_name == FROG_BACK) {
-
     u8_t pixel_data_frog_b[400][3];
     pixel_data = pixel_data_frog_b;
 
   } else if (sprite_name == CAR_RED) {
-
     u8_t pixel_data_car_red[400][3];
     pixel_data = pixel_data_car_red;
 
   } else if (sprite_name == CAR_YELLOW) {
-
     u8_t pixel_data_car_ye[400][3];
     pixel_data = pixel_data_car_ye;
 
   } else if (sprite_name == LILYPAD_1) {
-
     u8_t pixel_data_lily1[400][3];
     pixel_data = pixel_data_lily1;
 
   } else if (sprite_name == LILYPAD_2) {
-
     u8_t pixel_data_lily2[400][3];
     pixel_data = pixel_data_lily2;
 
   } else if (sprite_name == TRUCK_FRONT) {
-
     u8_t pixel_data_truckf[400][3];
     pixel_data = pixel_data_truckf;
 
   } else if (sprite_name == TRUCK_BACK) {
-
     u8_t pixel_data_truckb[400][3];
     pixel_data = pixel_data_truckb;
 
   } else if (sprite_name == TRUNK_TREE_FRONT) {
-
     u8_t pixel_data_trunk_treef[400][3];
     pixel_data = pixel_data_trunk_treef;
 
   } else if (sprite_name == TRUNK_TREE_MIDDLE) {
-
     u8_t pixel_data_trunk_treem[400][3];
     pixel_data = pixel_data_trunk_treem;
 
   } else if (sprite_name == TRUNK_TREE_BACK) {
-
     u8_t pixel_data_trunk_treeb[400][3];
     pixel_data = pixel_data_trunk_treeb;
 

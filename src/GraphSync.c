@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "NewSprites.h"
 #include "utils\ui.h"
 
 #define DEVICE_PATH "/dev/gpp_data_bus" /**< Path to device data bus */
@@ -203,8 +204,99 @@ sprite_fixed_t set_game_sprites() {
   char sprite_name;
   u8_t sprite_offset;
 
-  sprite_name = FROG_back;
+  /* SETING FROG FRONT SPRITE */
+  sprite_name = FROG_FRONT;
   sprite_offset = 0;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING FROG BACK SPRITE */
+  sprite_name = FROG_BACK;
+  sprite_offset = 1;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING CAR RED SPRITE */
+  sprite_name = CAR_RED;
+  sprite_offset = 2;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING CAR YELLOW SPRITE */
+  sprite_name = CAR_YELLOW;
+  sprite_offset = 3;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LILYPAD 1 SPRITE */
+  sprite_name = LILYPAD_1;
+  sprite_offset = 4;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LILYPAD 2 SPRITE */
+  sprite_name = LILYPAD_2;
+  sprite_offset = 5;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING TRUCK FRONT SPRITE */
+  sprite_name = TRUCK_FRONT;
+  sprite_offset = 6;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING TRUCK BACK SPRITE */
+  sprite_name = TRUCK_BACK;
+  sprite_offset = 7;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING TRUNK TREE FRONT SPRITE */
+  sprite_name = TRUNK_TREE_FRONT;
+  sprite_offset = 8;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING TRUNK TREE MIDDLE SPRITE */
+  sprite_name = TRUNK_TREE_MIDDLE;
+  sprite_offset = 9;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING TRUNK TREE BACK SPRITE */
+  sprite_name = TRUNK_TREE_BACK;
+  sprite_offset = 10;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER A SPRITE */
+  sprite_name = A_font;
+  sprite_offset = 11;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER C SPRITE */
+  sprite_name = C_font;
+  sprite_offset = 12;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER H SPRITE */
+  sprite_name = H_font;
+  sprite_offset = 13;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER K SPRITE */
+  sprite_name = K_font;
+  sprite_offset = 14;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER O SPRITE */
+  sprite_name = O_font;
+  sprite_offset = 15;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER R SPRITE */
+  sprite_name = R_font;
+  sprite_offset = 16;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER S SPRITE */
+  sprite_name = S_font;
+  sprite_offset = 17;
+  set_new_sprite(sprite_name, sprite_offset);
+
+  /* SETING LETTER U SPRITE */
+  sprite_name = U_font;
+  sprite_offset = 18;
   set_new_sprite(sprite_name, sprite_offset);
 
   close_data(device_fd);
