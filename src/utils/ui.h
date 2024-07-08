@@ -26,4 +26,20 @@
 
 #define DEVICE_PATH "/dev/gpp_data_bus" /**< Path to device data bus */
 
+/* SPRITES */
+#define FROG_front "frog-front"
+#define FROG_back "frog-back"
+#define LILYPAD_1 "lilypad1"
+#define LILYPAD_2 "lilypad1"
+
+
+#define A_font "a-font"
+#define C_font "c-font"
+#define H_font "h-font"
+#define K_font "k-font"
+#define O_font "o-font"
+#define R_font "r-font"
+#define S_font "s-font"
+#define U_font "u-font"
+
 #endif  // !UI_H_
