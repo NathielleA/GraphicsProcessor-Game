@@ -5,10 +5,10 @@ BUILD_DIR = $(PWD)/build
 KERNEL_DIR = /lib/modules/$(shell uname -r)/build
 
 # All *.c files.
-SOURCES =  GraphSync.c  NewSprites.c main.c 
+SOURCES =  GraphSync.c  NewSprites.c  main.c 
 
 # All *.h files.
-HEADERS =  utils/types.h  GraphSync.h NewSprites.h
+HEADERS =  utils/types.h  GraphSync.h  NewSprites.h
 
 all: build kernel
 
