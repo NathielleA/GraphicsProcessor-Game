@@ -24,8 +24,6 @@
 #define WREG_PHYS_ADDR (LW_VIRTUAL + WRREG_OFFSET)
 #define WRFULL_PHYS_ADDR (LW_VIRTUAL + WRFULL_OFFSET)
 
-// AONDE FICA O BRIDGE_SPAN?? E USA ESSA JOÇA?
-
 #define SUCCESS 0
 
 /*Global variables and structs for the functions of the module*/
