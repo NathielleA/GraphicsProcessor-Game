@@ -8,8 +8,6 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 
-// #include "address_map_arm.h"
-
 #define DEVICE_NAME "gpp_data_bus"
 #define CLASS_NAME "gppdatabus_class"
 
