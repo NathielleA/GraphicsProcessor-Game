@@ -8,7 +8,7 @@ typedef struct sprite_t sprite_t;
 struct sprite_t {
   u32_t coord_x;       /**< X-coordinate of the sprite. */
   u32_t coord_y;       /**< Y-coordinate of the sprite. */
-  u32_t direction;     /**< Direction of movement. */
+  u32_t direction;     /**< Direction of movement (1 -> right; 0 -> left). */
   u32_t offset;        /**< Offset used for bitmap selection. */
   u32_t data_register; /**< Register where sprite information is stored. */
   u32_t step_x;        /**< Number of pixels to move in the X direction. */
@@ -117,6 +117,8 @@ u64_t set_background_color(u32_t R, u32_t G, u32_t B);
  */
 u64_t set_polygon(polygon_t polygon);
 
+u8_t increase_coordinate_sprite(sprite_t *sprite, u16_t speed);
+
 void clean_sprite();
 
 void clean_polygon();
@@ -124,5 +126,3 @@ void clean_polygon();
 void clean_background();
 
 void set_game_sprites();
-
-void draw_picture();
