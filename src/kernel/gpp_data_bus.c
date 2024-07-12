@@ -156,7 +156,6 @@ static ssize_t data_bus_write(struct file *filep, const char *buffer, size_t len
   instruction_buffer = ioread32(wrfull_mem);
 
   while (instruction_buffer) {
-    // msleep(10);
     instruction_buffer = ioread32(wrfull_mem);
     if (instruction_buffer == 0) {
       break;
