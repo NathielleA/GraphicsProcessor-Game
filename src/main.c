@@ -205,15 +205,32 @@ void moving_sprites() {
 
   /* ---------- WATER SPRITES ---------- */
 
-  /* FIRST WATER WAY (TRUNK TREE, RIGHT DIRECTION) */
-  u16_t first_waterway = 10;  // Coodinate y -> número para a coordenada da primeira pista
+  /* FIRST WATER WAY (TRUNK TREE, LEFT DIRECTION) */
+  u16_t first_waterway = 10;  // Coodinate y -> número para a coordenada da primeira pista na água
 
   // coord_x, coord_y, direction, offset, data_register, step_x, step_y, speed, ativo, collision
-  sprite_t tree_1_1 = {end, first_waterway, 1, 2, 1, 1, 1, 2, 1, 0};
+  sprite_t tree_back_1 = {end, first_waterway, 0, 10, 16, 1, 1, 8, 1, 0};
+  sprite_t tree_middle_1 = {end + 20, first_waterway, 0, 9, 17, 1, 1, 8, 1, 0};
+  sprite_t tree_front_1 = {end + 40, first_waterway, 0, 8, 18, 1, 1, 8, 1, 0};
 
-  sprite_t tree_1_1 = {end + 20, first_waterway, 0, 2, 2, 1, 1, 2, 1, 0};
+  /* SECOND WATER WAY (LILYPAD, RIGHT DIRECTION) */
+  u16_t second_waterway = first_waterway + 40;  // Coodinate y -> número para a coordenada da segunda pista na água
 
-  sprite_t tree_1_3 = {end + 40, first_waterway, 0, 2, 3, 1, 1, 2, 1, 0};
+  sprite_t lilypad_1_1 = {beginning, second_waterway, 1, 4, 19, 1, 1, 6, 1, 0};
+  sprite_t lilypad_1_2 = {beginning + 100, second_waterway, 1, 5, 20, 1, 1, 6, 1, 0};
+
+  /* THIRD WATER WAY (TRUNK TREE, LEFT DIRECTION) */
+  u16_t third_waterway = second_waterway + 40;  // Coodinate y -> número para a coordenada da terceira pista na água
+
+  sprite_t tree_back_2 = {end, third_waterway, 0, 10, 21, 1, 1, 10, 1, 0};
+  sprite_t tree_middle_2 = {end + 20, third_waterway, 0, 9, 22, 1, 1, 10, 1, 0};
+  sprite_t tree_front_2 = {end + 40, third_waterway, 0, 8, 23, 1, 1, 10, 1, 0};
+
+  /* FOURTH WATER WAY (LILYPAD, RIGHT DIRECTION) */
+  u16_t second_waterway = first_waterway + 40;  // Coodinate y -> número para a coordenada da quarta pista na água
+
+  sprite_t lilypad_2_1 = {beginning, second_waterway, 1, 4, 24, 1, 1, 9, 1, 0};
+  sprite_t lilypad_2_2 = {beginning + 100, second_waterway, 1, 5, 25, 1, 1, 9, 1, 0};
 
   while (1) {
     /*---------- ROAD CONDITIONS ----------*/
@@ -316,6 +333,56 @@ void moving_sprites() {
     }
 
     /*---------- WATER CONDITIONS ----------*/
+
+    /* FIRST WATER WAY CONDITIONS */
+    if (tree_back_1.coord_x == beginning) {
+      tree_back_1.coord_x = end;
+      tree_middle_1.coord_x = end + 20;
+      tree_front_1.coord_x = end + 40;
+    } else {
+      increase_coordinate_sprite(&tree_back_1, counter);
+      increase_coordinate_sprite(&tree_middle_1, counter);
+      increase_coordinate_sprite(&tree_front_1, counter);
+      set_dynamic_sprite(tree_back_1);
+      set_dynamic_sprite(tree_middle_1);
+      set_dynamic_sprite(tree_front_1);
+    }
+
+    /* SECOND WATER WAY CONDITIONS */
+    if (lilypad_1_1.coord_x == end) {
+      lilypad_1_1.coord_x = beginning;
+      lilypad_1_2.coord_x = beginning + 20;
+    } else {
+      increase_coordinate_sprite(&lilypad_1_1, counter);
+      increase_coordinate_sprite(&lilypad_1_2, counter);
+      set_dynamic_sprite(lilypad_1_1);
+      set_dynamic_sprite(lilypad_1_2);
+    }
+
+    /* THIRD WATER WAY CONDITIONS */
+    if (tree_back_1.coord_x == beginning) {
+      tree_back_1.coord_x = end;
+      tree_middle_1.coord_x = end + 20;
+      tree_front_1.coord_x = end + 40;
+    } else {
+      increase_coordinate_sprite(&tree_back_1, counter);
+      increase_coordinate_sprite(&tree_middle_1, counter);
+      increase_coordinate_sprite(&tree_front_1, counter);
+      set_dynamic_sprite(tree_back_1);
+      set_dynamic_sprite(tree_middle_1);
+      set_dynamic_sprite(tree_front_1);
+    }
+
+    /* FOURTH WATER WAY CONDITIONS */
+    if (lilypad_2_1.coord_x == end) {
+      lilypad_2_1.coord_x = beginning;
+      lilypad_2_2.coord_x = beginning + 20;
+    } else {
+      increase_coordinate_sprite(&lilypad_2_1, counter);
+      increase_coordinate_sprite(&lilypad_2_2, counter);
+      set_dynamic_sprite(lilypad_2_1);
+      set_dynamic_sprite(lilypad_2_2);
+    }
 
     counter += 1;
   }
