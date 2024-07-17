@@ -154,20 +154,15 @@ u64_t set_polygon(polygon_t polygon) {
   return instruction;
 }
 
-u8_t increase_coordinate_sprite(sprite_t *sprite, u16_t speed) {
+u8_t increase_coordinate_sprite(sprite_t *sprite, u32_t counter) {
+  if (counter % sprite->speed == 0) {
+    if (sprite->direction == 1) {
+      sprite->coord_x += sprite->step_x;
 
-  if (sprite.direction == 1){
-
-    sprite->coord_x += sprite->step_x;
-    //sprite->coord_y += sprite->step_y;
-    
-  } else if (sprite.direction == 0) {
-    
-    sprite->coord_x -= sprite->step_x;
-    //sprite->coord_y -= sprite->step_y;
+    } else if (sprite->direction == 0) {
+      sprite->coord_x -= sprite->step_x;
+    }
   }
-
-  usleep(speed);
 
   return 0;
 }
