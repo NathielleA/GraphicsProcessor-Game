@@ -13,6 +13,7 @@ struct sprite_t {
   u32_t data_register; /**< Register where sprite information is stored. */
   u32_t step_x;        /**< Number of pixels to move in the X direction. */
   u32_t step_y;        /**< Number of pixels to move in the Y direction. */
+  u32_t speed;         /**< Sprite movement speed (the higher, the slower) */
   u32_t ativo;         /**< Activation status of the sprite. */
   u32_t collision;     /**< Collision status of the sprite. */
 };
@@ -117,7 +118,7 @@ u64_t set_background_color(u32_t R, u32_t G, u32_t B);
  */
 u64_t set_polygon(polygon_t polygon);
 
-u8_t increase_coordinate_sprite(sprite_t *sprite, u16_t speed);
+u8_t increase_coordinate_sprite(sprite_t *sprite, u32_t counter);
 
 void clean_sprite();
 
