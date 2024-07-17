@@ -16,8 +16,14 @@ int main(void) {
   set_game_sprites();
 
   // clean_background();
+  game_screen();
+  moving_sprites();
 
-  set_background_color(0, 4, 7);
+  return 0;
+}
+
+void game_screen() {
+  set_background_color(0, 5, 6);
 
   /*FROG FAMILY HOUSES*/
   ground_block_t frog_houses;
@@ -42,8 +48,8 @@ int main(void) {
   squares_1.type = 0;
   squares_1.size = 2;
   squares_1.R = 0;
-  squares_1.G = 4;
-  squares_1.B = 7;
+  squares_1.G = 5;
+  squares_1.B = 6;
   squares_1.data_register = 1;
 
   squares_1.ref_point_x = 50 + 60;
@@ -54,8 +60,8 @@ int main(void) {
   squares_2.type = 0;
   squares_2.size = 2;
   squares_2.R = 0;
-  squares_2.G = 4;
-  squares_2.B = 7;
+  squares_2.G = 5;
+  squares_2.B = 6;
   squares_2.data_register = 2;
 
   squares_2.ref_point_x = 150 + 60;
@@ -66,8 +72,8 @@ int main(void) {
   squares_3.type = 0;
   squares_3.size = 2;
   squares_3.R = 0;
-  squares_3.G = 4;
-  squares_3.B = 7;
+  squares_3.G = 5;
+  squares_3.B = 6;
   squares_3.data_register = 3;
 
   squares_3.ref_point_x = 250 + 60;
@@ -78,8 +84,8 @@ int main(void) {
   squares_4.type = 0;
   squares_4.size = 2;
   squares_4.R = 0;
-  squares_4.G = 4;
-  squares_4.B = 7;
+  squares_4.G = 5;
+  squares_4.B = 6;
   squares_4.data_register = 4;
 
   squares_4.ref_point_x = 350 + 60;
@@ -90,8 +96,8 @@ int main(void) {
   squares_5.type = 0;
   squares_5.size = 2;
   squares_5.R = 0;
-  squares_5.G = 4;
-  squares_5.B = 7;
+  squares_5.G = 5;
+  squares_5.B = 6;
   squares_5.data_register = 5;
 
   squares_5.ref_point_x = 450 + 60;
@@ -147,18 +153,6 @@ int main(void) {
     cars_lane.address = st_cars;
     set_background_block(cars_lane);
   }
-
-  // sprite_fixed_t teste;
-  // teste.ativo = 1;
-  // teste.coord_x = 100;
-  // teste.coord_y = 100;
-  // teste.data_register = 6;
-  // teste.offset = 1;
-  // set_fixed_sprite(teste);
-
-  moving_sprites();
-
-  return 0;
 }
 
 void moving_sprites() {
@@ -166,6 +160,8 @@ void moving_sprites() {
 
   u16_t beginning = 0;  // Coordinate x -> número para o começo da tela
   u16_t end = 600;      // Coordinate x -> número para o fim da tela
+
+  /* ---------- ROAD SPRITES ---------- */
 
   /* FIRST ROAD (RED CARS, LEFT DIRECTION) */
   u16_t first_road = 280;  // Coodinate y -> número para a coordenada da primeira pista
@@ -198,7 +194,30 @@ void moving_sprites() {
   sprite_t truckfront_3_3 = {end + 200, third_road, 0, 6, 11, 1, 1, 3, 1, 0};
   sprite_t truckback_3_3 = {end + 220, third_road, 0, 7, 12, 1, 1, 3, 1, 0};
 
-    while (1) {
+  /* FOURTH ROAD (GREEN CARS, RIGHT DIRECTION) */
+  u16_t fourth_road = third_road + 40;  // Coodinate y -> número para a coordenada da quarta pista
+
+  sprite_t car_4_1 = {beginning, fourth_road, 1, 3, 13, 1, 1, 1, 1, 0};
+
+  sprite_t car_4_2 = {beginning + 30, fourth_road, 1, 3, 14, 1, 1, 1, 1, 0};
+
+  sprite_t car_4_3 = {beginning + 60, fourth_road, 1, 3, 15, 1, 1, 1, 1, 0};
+
+  /* ---------- WATER SPRITES ---------- */
+
+  /* FIRST WATER WAY (TRUNK TREE, RIGHT DIRECTION) */
+  u16_t first_waterway = 10;  // Coodinate y -> número para a coordenada da primeira pista
+
+  // coord_x, coord_y, direction, offset, data_register, step_x, step_y, speed, ativo, collision
+  sprite_t tree_1_1 = {end, first_waterway, 1, 2, 1, 1, 1, 2, 1, 0};
+
+  sprite_t tree_1_1 = {end + 20, first_waterway, 0, 2, 2, 1, 1, 2, 1, 0};
+
+  sprite_t tree_1_3 = {end + 40, first_waterway, 0, 2, 3, 1, 1, 2, 1, 0};
+
+  while (1) {
+    /*---------- ROAD CONDITIONS ----------*/
+
     /* FIRST ROAD CONDITIONS */
     if (car_1_1.coord_x == beginning) {
       car_1_1.coord_x = end;
@@ -244,7 +263,7 @@ void moving_sprites() {
     }
 
     /* THIRD  ROAD CONDITIONS */
-    if (truckfront_3_1.coord_x == beginning && truckback_3_1.coord_x == beginning + 1) {
+    if (truckfront_3_1.coord_x == beginning) {
       truckfront_3_1.coord_x = end;
       truckback_3_1.coord_x = end + 20;
     } else {
@@ -254,9 +273,9 @@ void moving_sprites() {
       set_dynamic_sprite(truckback_3_1);
     }
 
-    if (truckfront_3_2.coord_x == beginning && truckback_3_2.coord_x == beginning + 1) {
-      truckfront_3_2.coord_x = end;
-      truckback_3_2.coord_x = end + 20;
+    if (truckfront_3_2.coord_x == beginning) {
+      truckfront_3_2.coord_x = end + 100;
+      truckback_3_2.coord_x = end + 120;
     } else {
       increase_coordinate_sprite(&truckfront_3_2, counter);
       increase_coordinate_sprite(&truckback_3_2, counter);
@@ -264,9 +283,9 @@ void moving_sprites() {
       set_dynamic_sprite(truckback_3_2);
     }
 
-    if (truckfront_3_3.coord_x == beginning && truckback_3_3.coord_x == beginning + 1) {
-      truckfront_3_3.coord_x = end;
-      truckback_3_3.coord_x = end + 20;
+    if (truckfront_3_3.coord_x == beginning) {
+      truckfront_3_3.coord_x = end + 200;
+      truckback_3_3.coord_x = end + 220;
     } else {
       increase_coordinate_sprite(&truckfront_3_3, counter);
       increase_coordinate_sprite(&truckback_3_3, counter);
@@ -274,49 +293,29 @@ void moving_sprites() {
       set_dynamic_sprite(truckback_3_3);
     }
 
-    // /* FOURTH ROAD CONDITIONS */
-    // if (car_1.coord_x == end) {
-    //   car_1.coord_x = beginning;
-    // } else {
-    //   increase_coordinate_sprite(car_1);
-    //   set_dynamic_sprite(car_1);
-    // }
+    /* FOURTH ROAD CONDITIONS */
+    if (car_4_1.coord_x == end) {
+      car_4_1.coord_x = beginning;
+    } else {
+      increase_coordinate_sprite(&car_4_1, counter);
+      set_dynamic_sprite(car_4_1);
+    }
 
-    // if (car_2.coord_x == end) {
-    //   car_2.coord_x = beginning + 10;
-    // } else {
-    //   increase_coordinate_sprite(car_2);
-    //   set_dynamic_sprite(car_2);
-    // }
+    if (car_4_2.coord_x == end) {
+      car_4_2.coord_x = beginning - 30;
+    } else {
+      increase_coordinate_sprite(&car_4_2, counter);
+      set_dynamic_sprite(car_4_2);
+    }
 
-    // if (car_3.coord_x == end) {
-    //   car_3.coord_x = beginning + 15;
-    // } else {
-    //   increase_coordinate_sprite(car_3);
-    //   set_dynamic_sprite(car_3);
-    // }
+    if (car_4_3.coord_x == end) {
+      car_4_3.coord_x = beginning - 60;
+    } else {
+      increase_coordinate_sprite(&car_4_3, counter);
+      set_dynamic_sprite(car_4_3);
+    }
 
-    // /* FIFTH ROAD CONDITIONS */
-    // if (car_1.coord_x == end) {
-    //   car_1.coord_x = beginning;
-    // } else {
-    //   increase_coordinate_sprite(car_1);
-    //   set_dynamic_sprite(car_1);
-    // }
-
-    // if (car_2.coord_x == end) {
-    //   car_2.coord_x = beginning + 10;
-    // } else {
-    //   increase_coordinate_sprite(car_2);
-    //   set_dynamic_sprite(car_2);
-    // }
-
-    // if (car_3.coord_x == end) {
-    //   car_3.coord_x = beginning + 15;
-    // } else {
-    //   increase_coordinate_sprite(car_3);
-    //   set_dynamic_sprite(car_3);
-    // }
+    /*---------- WATER CONDITIONS ----------*/
 
     counter += 1;
   }
