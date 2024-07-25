@@ -6,7 +6,9 @@
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
+#include <linux/kfifo.h>
 #include <linux/module.h>
+#include <linux/mutex.h>
 
 #define DEVICE_NAME "gpp_data_bus"
 #define CLASS_NAME "gppdatabus_class"
@@ -33,6 +35,9 @@ void __iomem *data_a_mem;
 void __iomem *data_b_mem;
 void __iomem *wreg_mem;
 void __iomem *wrfull_mem;
+
+struct kfifo instruction_fifo;
+DEFINE_MUTEX(fifo_lock);
 
 /*Declaring default functions and the file operations*/
 static ssize_t data_bus_read(struct file *, char *, size_t, loff_t *);
@@ -114,10 +119,26 @@ static int __init data_bus_init(void) {
     return -EIO;
   }
 
+  /* Initialize the FIFO */
+  if (kfifo_alloc(&instruction_fifo, PAGE_SIZE, GFP_KERNEL)) {
+    printk(KERN_ALERT "Failed to allocate FIFO\n");
+    iounmap(data_a_mem);
+    iounmap(data_b_mem);
+    iounmap(wreg_mem);
+    iounmap(wrfull_mem);
+    device_destroy(dataBusClass, MKDEV(majorNumber, 0));
+    class_destroy(dataBusClass);
+    unregister_chrdev(majorNumber, DEVICE_NAME);
+    return -ENOMEM;
+  }
+
+  mutex_init(&fifo_lock);
+
   return 0;
 }
 
 static void __exit data_bus_exit(void) {
+  kfifo_free(&instruction_fifo);
   iounmap(data_a_mem);
   iounmap(data_b_mem);
   iounmap(wreg_mem);
@@ -150,33 +171,59 @@ static ssize_t data_bus_write(struct file *filep, const char *buffer, size_t len
   uint32_t data_a;
   uint32_t data_b;
 
-  uint32_t instruction_buffer;
-  instruction_buffer = ioread32(wrfull_mem);
-
-  while (instruction_buffer) {
-    instruction_buffer = ioread32(wrfull_mem);
-    if (instruction_buffer == 0) {
-      break;
-    }
-  }
-
-  uint32_t start = 0x00000000;
-  iowrite32(start, wreg_mem);
-
   if (copy_from_user(&data, buffer, sizeof(data))) {
     return -EFAULT;
   }
 
-  data_a = (uint32_t)(data & 0xFFFFFFFF);
-  data_b = (uint32_t)(data >> 32);
+  if (mutex_lock_interruptible(&fifo_lock)) {
+    return -ERESTARTSYS;
+  }
 
-  iowrite32(data_a, data_a_mem);
-  iowrite32(data_b, data_b_mem);
+  /* Add the data to the FIFO */
+  if (!kfifo_put(&instruction_fifo, data)) {
+    mutex_unlock(&fifo_lock);
+    return -EAGAIN;
+  }
 
-  start = 0x00000001;
-  iowrite32(start, wreg_mem);
+  mutex_unlock(&fifo_lock);
+
+  /* Schedule work to process the FIFO */
+  schedule_work(&process_fifo_work);
 
   return sizeof(data);
+}
+
+static void process_fifo_work(struct work_struct *work) {
+  uint64_t data;
+  uint32_t data_a;
+  uint32_t data_b;
+
+  while (!kfifo_is_empty(&instruction_fifo)) {
+    if (mutex_lock_interruptible(&fifo_lock)) {
+      return;
+    }
+
+    /* Get data from the FIFO */
+    if (!kfifo_get(&instruction_fifo, &data)) {
+      mutex_unlock(&fifo_lock);
+      return;
+    }
+
+    mutex_unlock(&fifo_lock);
+
+    data_a = (uint32_t)(data & 0xFFFFFFFF);
+    data_b = (uint32_t)(data >> 32);
+
+    while (ioread32(wrfull_mem)) {
+      // msleep(1); /* Sleep for 1ms if the buffer is full */
+    }
+
+    iowrite32(data_a, data_a_mem);
+    iowrite32(data_b, data_b_mem);
+
+    uint32_t start = 0x00000001;
+    iowrite32(start, wreg_mem);
+  }
 }
 
 static int data_bus_open(struct inode *inode, struct file *file) {
