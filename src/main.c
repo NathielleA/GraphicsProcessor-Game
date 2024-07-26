@@ -25,8 +25,6 @@
 
 volatile i8_t state_game;
 pthread_mutex_t mutex;
-// i32_t previous_key_state;
-// volatile i8_t edge_capture;
 u8_t previous_state;
 u32_t counter_state;
 sprite_t cursor;
@@ -34,9 +32,9 @@ sprite_t cursor;
 sprite_t car_1_1;
 sprite_t car_1_2;
 sprite_t car_1_3;
-// sprite_t car_2_1;
-// sprite_t car_2_2;
-// sprite_t car_2_3;
+sprite_t car_2_1;
+sprite_t car_2_2;
+sprite_t car_2_3;
 // sprite_t truckfront_3_1;
 // sprite_t truckback_3_1;
 // sprite_t truckfront_3_2;
@@ -59,6 +57,9 @@ sprite_t car_1_3;
 // sprite_t tree_back_1;
 // sprite_t tree_middle_1;
 // sprite_t tree_front_1;
+// sprite_t tree_back_2;
+// sprite_t tree_middle_2;
+// sprite_t tree_front_2;
 // sprite_t lilypad_1_1;
 // sprite_t lilypad_1_2;
 // sprite_t lilypad_2_1;
@@ -295,11 +296,11 @@ void *visul_thread() {
   /* SECOND ROAD (YELLOW CARS, RIGHT DIRECTION) */
   u16_t second_road = first_road + 40;  // Coodinate y -> número para a coordenada da segunda pista
 
-  sprite_t car_2_1 = {beginning, second_road, 1, 3, 4, 1, 1, 4, 1, 0};
+  car_2_1 = {beginning, second_road, 1, 3, 4, 1, 1, 4, 1, 0};
 
-  sprite_t car_2_2 = {beginning + 30, second_road, 1, 3, 5, 1, 1, 4, 1, 0};
+  car_2_2 = {beginning + 30, second_road, 1, 3, 5, 1, 1, 4, 1, 0};
 
-  sprite_t car_2_3 = {beginning + 60, second_road, 1, 3, 6, 1, 1, 4, 1, 0};
+  car_2_3 = {beginning + 60, second_road, 1, 3, 6, 1, 1, 4, 1, 0};
 
   /* THRID ROAD (TRUCKS, LEFT DIRECTION) */
   u16_t third_road = second_road + 40;  // Coodinate y -> número para a coordenada da terceira pista
@@ -588,6 +589,9 @@ void *collision_thread() {
     collision(&cursor, &car_1_1);
     collision(&cursor, &car_1_2);
     collision(&cursor, &car_1_3);
+    collision(&cursor, &car_2_1);
+    collision(&cursor, &car_2_2);
+    collision(&cursor, &car_2_3);
   }
 
   pthread_exit(NULL);
