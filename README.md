@@ -1,5 +1,5 @@
 <div align="center">
-   <img width="550px" src="img\readme_head.png" />
+   <img width="550px" src="img\readme_head(1).png" />
 </div>
 
 # GraphicsProcessor-HPS-Kernel-Library
