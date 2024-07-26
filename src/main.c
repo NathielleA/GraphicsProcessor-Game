@@ -325,7 +325,7 @@ void *visul_thread() {
   /* ---------- WATER SPRITES ---------- */
 
   /* FIRST WATER WAY (TRUNK TREE, LEFT DIRECTION) */
-  u16_t first_waterway = 50;  // Coodinate y -> número para a coordenada da primeira pista na água
+  u16_t first_waterway = 60;  // Coodinate y -> número para a coordenada da primeira pista na água
 
   // coord_x, coord_y, direction, offset, data_register, step_x, step_y, speed, ativo, collision
   sprite_t tree_back_1 = {end, first_waterway, 0, 10, 16, 1, 1, 8, 1, 0};
@@ -494,14 +494,14 @@ void *visul_thread() {
       }
 
       /* THIRD WATER WAY CONDITIONS */
-      if (tree_back_1.coord_x == beginning) {
-        tree_back_1.coord_x = end;
-        tree_middle_1.coord_x = end + 20;
-        tree_front_1.coord_x = end + 40;
+      if (tree_back_2.coord_x == beginning) {
+        tree_back_2.coord_x = end;
+        tree_middle_2.coord_x = end + 20;
+        tree_front_2.coord_x = end + 40;
       } else {
-        increase_coordinate_sprite(&tree_back_1, counter);
-        increase_coordinate_sprite(&tree_middle_1, counter);
-        increase_coordinate_sprite(&tree_front_1, counter);
+        increase_coordinate_sprite(&tree_back_2, counter);
+        increase_coordinate_sprite(&tree_middle_2, counter);
+        increase_coordinate_sprite(&tree_front_2, counter);
       }
 
       /* FOURTH WATER WAY CONDITIONS */
@@ -602,7 +602,7 @@ int main(void) {
 
   pthread_mutex_init(&mutex, NULL);
 
-  previous_state = START;
+  previous_state = GAME;
 
   pthread_t thread_key_id;
   pthread_t thread_mouse_id;
@@ -644,12 +644,10 @@ int main(void) {
   counter_state = 0;
 
   while (1) {
-    // printf("STATE GAME: %d\nPREVIOUS STATE: %d\n", state_game, previous_state);
     switch (state_game) {
-      // printf("%d\n", state_game);
       case START:
 
-        if (counter_state == 0) {
+        if (previous_state != START) {
           pthread_mutex_lock(&mutex);
           clean_sprite();
           pthread_mutex_unlock(&mutex);
@@ -663,7 +661,6 @@ int main(void) {
           pthread_mutex_unlock(&mutex);
 
           pthread_mutex_lock(&mutex);
-          // set_background_color(0, 7, 7);
           init_screen();
           pthread_mutex_unlock(&mutex);
         }
@@ -671,7 +668,7 @@ int main(void) {
         break;
       case GAME:
 
-        if (counter_state == 0) {
+        if (previous_state != GAME) {
           pthread_mutex_lock(&mutex);
           clean_sprite();
           pthread_mutex_unlock(&mutex);
@@ -691,6 +688,8 @@ int main(void) {
 
         /*Verifica a colisão*/
         if (cursor.collision == 1) {
+          gameover_screen();
+          sleep(1);
           state_game = START;
           counter_state = 0;
           cursor.coord_x = 320;
@@ -700,7 +699,7 @@ int main(void) {
         break;
       case PAUSE:
 
-        if (counter_state == 0) {
+        if (previous_state != PAUSE) {
           pthread_mutex_lock(&mutex);
           clean_sprite();
           pthread_mutex_unlock(&mutex);
@@ -714,24 +713,12 @@ int main(void) {
           pthread_mutex_unlock(&mutex);
 
           pthread_mutex_lock(&mutex);
-          set_background_color(7, 7, 0);
+          pause_screen();
           pthread_mutex_unlock(&mutex);
         }
 
         break;
-      // case RESTART:
-      //   pthread_mutex_lock(&mutex);
-      //   clean_sprite();
-      //   pthread_mutex_unlock(&mutex);
 
-      //   pthread_mutex_lock(&mutex);
-      //   clean_polygon();
-      //   pthread_mutex_unlock(&mutex);
-
-      //   pthread_mutex_lock(&mutex);
-      //   clean_background();
-      //   pthread_mutex_unlock(&mutex);
-      //   break;
       default:
         break;
     }
