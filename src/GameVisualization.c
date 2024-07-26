@@ -641,6 +641,18 @@ void init_screen() {
   }
 }
 
+void pause_screen() {
+  return;
+}
+
+void gameover_screen() {
+  return;
+}
+
+void victory_screen() {
+  return;
+}
+
 void moving_sprites(u8_t active_bit) {
   u32_t counter = 0;
 
