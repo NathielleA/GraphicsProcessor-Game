@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/input.h>
+#include <pthread.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,154 +9,245 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+#include "GameVisualization.h"
 #include "GraphSync.h"
 
-//-------------------------------------------------------------
+#define KEY_BASE 0X0
+#define LW_BRIDGE_SPAN 0x00005000
+#define LW_BRIDGE_BASE 0xff200000
 
-int main(void) {
-  set_game_sprites();
+#define MOUSE_DEVICE_PATH "/dev/input/mice"
 
-  // clean_background();
-  game_screen();
-  moving_sprites();
+#define START 0
+#define GAME 1
+#define PAUSE 2
+#define RESTART 3
 
-  return 0;
-}
+volatile i8_t state_game;
+pthread_mutex_t mutex;
+// i32_t previous_key_state;
+// volatile i8_t edge_capture;
+u8_t previous_state;
+u32_t counter_state;
+sprite_t cursor;
 
-void game_screen() {
-  set_background_color(0, 5, 6);
+sprite_t car_1_1;
+sprite_t car_1_2;
+sprite_t car_1_3;
+// sprite_t car_2_1;
+// sprite_t car_2_2;
+// sprite_t car_2_3;
+// sprite_t truckfront_3_1;
+// sprite_t truckback_3_1;
+// sprite_t truckfront_3_2;
+// sprite_t truckback_3_2;
+// sprite_t car_1_1;
+// sprite_t car_1_2;
+// sprite_t car_1_3;
+// sprite_t car_2_1;
+// sprite_t car_2_2;
+// sprite_t car_2_3;
+// sprite_t truckfront_3_1;
+// sprite_t truckback_3_1;
+// sprite_t truckfront_3_2;
+// sprite_t truckback_3_2;
+// sprite_t truckfront_3_3;
+// sprite_t truckback_3_3;
+// sprite_t car_4_1;
+// sprite_t car_4_2;
+// sprite_t car_4_3;
+// sprite_t tree_back_1;
+// sprite_t tree_middle_1;
+// sprite_t tree_front_1;
+// sprite_t lilypad_1_1;
+// sprite_t lilypad_1_2;
+// sprite_t lilypad_2_1;
+// sprite_t lilypad_2_2;
 
-  /*FROG FAMILY HOUSES*/
-  ground_block_t frog_houses;
-  frog_houses.R = 0;
-  frog_houses.G = 4;
-  frog_houses.B = 1;
+void change_state(volatile i32_t *KEY_ptr, volatile i8_t edge_capture) {
+  switch (state_game) {
+    case START:
 
-  u16_t fh = 0;
-  for (fh; fh < 400; fh++) {
-    frog_houses.address = fh;
+      if (*KEY_ptr == 0b0111 && edge_capture) {  // primeiro botão da placa, tecla pressionada
+        state_game = GAME;
+        previous_state = START;
+      } else if (*KEY_ptr == 0b1111) {
+        state_game = START;
+        previous_state = START;
+      }
+      break;
 
-    if (fh >= 320) {
-      frog_houses.R = 0;
-      frog_houses.G = 6;
-      frog_houses.B = 1;
-    }
+    case GAME:
+      if (*KEY_ptr == 0b0111 && edge_capture) {  // primeiro botão da placa, tecla pressionada
+        state_game = PAUSE;
+        previous_state = GAME;
+      } else if (*KEY_ptr == 0b1111) {
+        state_game = GAME;
+        previous_state = GAME;
+      }
+      break;
 
-    set_background_block(frog_houses);
-  }
+    case PAUSE:
 
-  polygon_t squares_1;
-  squares_1.type = 0;
-  squares_1.size = 2;
-  squares_1.R = 0;
-  squares_1.G = 5;
-  squares_1.B = 6;
-  squares_1.data_register = 1;
+      if (*KEY_ptr == 0b0111 && edge_capture) {  // primeiro botão da placa, tecla pressionada
+        state_game = GAME;
+        previous_state = PAUSE;
+      } else if (*KEY_ptr == 0b1011 && edge_capture) {  // segundo botão da placa, tecla pressionada
+        state_game = START;
+        previous_state = PAUSE;
+      } else if (*KEY_ptr == 0b1101 && edge_capture) {  // terceiro botão da placa, tecla pressionada
+        state_game = START;
+        previous_state = PAUSE;
+      } else if (*KEY_ptr == 0b1111) {
+        state_game = PAUSE;
+        previous_state = PAUSE;
+      }
+      break;
 
-  squares_1.ref_point_x = 50 + 60;
-  squares_1.ref_point_y = 25;
-  set_polygon(squares_1);
+      // case RESTART:
+      //   previous_state = RESTART;
 
-  polygon_t squares_2;
-  squares_2.type = 0;
-  squares_2.size = 2;
-  squares_2.R = 0;
-  squares_2.G = 5;
-  squares_2.B = 6;
-  squares_2.data_register = 2;
+      //   state_game = GAME;  // terceiro botão da placa, tecla pressionada
+      //   system("clear");
 
-  squares_2.ref_point_x = 150 + 60;
-  squares_2.ref_point_y = 25;
-  set_polygon(squares_2);
+      //   break;
 
-  polygon_t squares_3;
-  squares_3.type = 0;
-  squares_3.size = 2;
-  squares_3.R = 0;
-  squares_3.G = 5;
-  squares_3.B = 6;
-  squares_3.data_register = 3;
-
-  squares_3.ref_point_x = 250 + 60;
-  squares_3.ref_point_y = 25;
-  set_polygon(squares_3);
-
-  polygon_t squares_4;
-  squares_4.type = 0;
-  squares_4.size = 2;
-  squares_4.R = 0;
-  squares_4.G = 5;
-  squares_4.B = 6;
-  squares_4.data_register = 4;
-
-  squares_4.ref_point_x = 350 + 60;
-  squares_4.ref_point_y = 25;
-  set_polygon(squares_4);
-
-  polygon_t squares_5;
-  squares_5.type = 0;
-  squares_5.size = 2;
-  squares_5.R = 0;
-  squares_5.G = 5;
-  squares_5.B = 6;
-  squares_5.data_register = 5;
-
-  squares_5.ref_point_x = 450 + 60;
-  squares_5.ref_point_y = 25;
-  set_polygon(squares_5);
-
-  /* STREETS */
-  ground_block_t streets;
-
-  u16_t st_b = 2240;
-  u16_t i = 0;
-  for (st_b; st_b < 2720; st_b++) {
-    streets.address = st_b;
-
-    if ((streets.address % 2) == 0) {
-      streets.R = 2;
-      streets.G = 0;
-      streets.B = 2;
-    } else {
-      streets.R = 4;
-      streets.G = 0;
-      streets.B = 4;
-    }
-
-    set_background_block(streets);
-  }
-
-  u16_t st_e = 4400;
-  for (st_e; st_e < 4800; st_e++) {
-    streets.address = st_e;
-
-    if ((streets.address % 2) == 0) {
-      streets.R = 2;
-      streets.G = 0;
-      streets.B = 2;
-    } else {
-      streets.R = 4;
-      streets.G = 0;
-      streets.B = 4;
-    }
-
-    set_background_block(streets);
-  }
-
-  /* CARS LANE*/
-  ground_block_t cars_lane;
-  cars_lane.R = 3;
-  cars_lane.G = 3;
-  cars_lane.B = 3;
-
-  u16_t st_cars = 2720;
-  for (st_cars; st_cars < 4400; st_cars++) {
-    cars_lane.address = st_cars;
-    set_background_block(cars_lane);
+    default:
+      break;
   }
 }
 
-void moving_sprites() {
+void *key_thread(void *args) {
+  // volatile i8_t *state_game = (volatile i8_t *)args;
+
+  static i32_t fd_map = -1;
+
+  // counter_state = 0;
+
+  fd_map = open("/dev/mem", (O_RDWR | O_SYNC));
+  if (fd_map == -1) {
+    perror("Error maping memory");
+    exit(EXIT_FAILURE);
+  }
+
+  void *LW_virtual = mmap(NULL, LW_BRIDGE_SPAN, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_map, LW_BRIDGE_BASE);
+  if (LW_virtual == MAP_FAILED) {
+    perror("Error maping memory");
+    exit(EXIT_FAILURE);
+  }
+
+  volatile i32_t *KEY_ptr = (i32_t *)(LW_virtual + KEY_BASE);
+  volatile i8_t edge_capture = 1;
+  i32_t previous_key_state = 0b1111;
+  i32_t current_key_state;
+
+  while (1) {
+    current_key_state = *KEY_ptr;
+    if (previous_key_state == current_key_state) {
+      edge_capture = 0;
+    } else {
+      edge_capture = 1;
+    }
+
+    previous_key_state = current_key_state;
+
+    change_state(KEY_ptr, edge_capture);
+
+    if (previous_state == state_game) {
+      counter_state += 1;
+    } else {
+      counter_state = 0;
+    }
+
+    printf("COUNTER: %d\n", counter_state);
+  }
+
+  if (munmap(LW_virtual, LW_BRIDGE_SPAN) == -1) {
+    perror("Error ending ");
+    exit(EXIT_FAILURE);
+  }
+  if (close(fd_map) == -1) {
+    perror("Error ending device");
+    exit(EXIT_FAILURE);
+  }
+
+  pthread_exit(args);
+}
+
+void *mouse_thread() {
+  static i64_t fd_mouse = -1;
+
+  fd_mouse = open(MOUSE_DEVICE_PATH, O_RDONLY);
+  if (fd_mouse == -1) {
+    perror("Error opening device");
+    exit(EXIT_FAILURE);
+  }
+
+  struct input_event ev_mouse;
+
+  // cursor.ativo = 1;
+  cursor.data_register = 30;
+  cursor.offset = 1;
+  cursor.coord_x = 320;
+  cursor.coord_y = 450;
+  cursor.collision = 0;
+
+  // Abrindo o dispositivo do mouse (adapte o caminho conforme necessário)
+  fd_mouse = open("/dev/input/event0", O_RDONLY);
+  if (fd_mouse == -1) {
+    perror("Erro ao abrir o dispositivo de entrada");
+    exit(EXIT_FAILURE);
+  }
+
+  while (1) {
+    ssize_t bytes = read(fd_mouse, &ev_mouse, sizeof(ev_mouse));
+    if (bytes < sizeof(struct input_event)) {
+      perror("Erro ao ler evento do mouse");
+      exit(EXIT_FAILURE);
+    }
+
+    if (state_game == GAME) {
+      cursor.ativo = 1;
+
+      if (ev_mouse.type == EV_REL && ev_mouse.code == REL_X) {
+        cursor.coord_x += ev_mouse.value;
+      }
+
+      if (ev_mouse.type == EV_KEY && ev_mouse.code == BTN_LEFT) {
+        cursor.coord_y -= 10;
+      } else if (ev_mouse.type == EV_KEY && ev_mouse.code == BTN_RIGHT) {
+        cursor.coord_y += 10;
+      }
+      pthread_mutex_lock(&mutex);
+      set_dynamic_sprite(cursor);
+      pthread_mutex_unlock(&mutex);
+    } else {
+      cursor.ativo = 0;
+      pthread_mutex_lock(&mutex);
+      set_dynamic_sprite(cursor);
+      pthread_mutex_unlock(&mutex);
+    }
+
+    // if (state_game == GAME && ev_mouse.type == EV_REL && ev_mouse.code == REL_X) {
+    //   cursor.coord_x += ev_mouse.value;
+    //   set_dynamic_sprite(cursor);
+    // }
+
+    // if (state_game == GAME && ev_mouse.type == EV_KEY && ev_mouse.code == BTN_LEFT) {
+    //   cursor.coord_y -= 10;
+    //   set_dynamic_sprite(cursor);
+    // } else if (state_game == GAME && ev_mouse.type == EV_KEY && ev_mouse.code == BTN_RIGHT) {
+    //   cursor.coord_y += 10;
+    //   set_dynamic_sprite(cursor);
+    // }
+
+    // set_dynamic_sprite(cursor);
+  }
+
+  pthread_exit(NULL);
+}
+
+void *visul_thread() {
   u32_t counter = 0;
 
   u16_t beginning = 0;  // Coordinate x -> número para o começo da tela
@@ -167,11 +259,38 @@ void moving_sprites() {
   u16_t first_road = 280;  // Coodinate y -> número para a coordenada da primeira pista
 
   // coord_x, coord_y, direction, offset, data_register, step_x, step_y, speed, ativo, collision
-  sprite_t car_1_1 = {end, first_road, 0, 2, 1, 1, 1, 2, 1, 0};
+  car_1_1.coord_x = end;
+  car_1_1.coord_y = first_road;
+  car_1_1.direction = 0;
+  car_1_1.offset = 2;
+  car_1_1.data_register = 1;
+  car_1_1.step_x = 1;
+  car_1_1.step_y = 1;
+  car_1_1.speed = 2;
+  car_1_1.ativo = 1;
+  car_1_1.collision = 0;
 
-  sprite_t car_1_2 = {end + 60, first_road, 0, 2, 2, 1, 1, 2, 1, 0};
+  car_1_2.coord_x = end + 60;
+  car_1_2.coord_y = first_road;
+  car_1_2.direction = 0;
+  car_1_2.offset = 2;
+  car_1_2.data_register = 2;
+  car_1_2.step_x = 1;
+  car_1_2.step_y = 1;
+  car_1_2.speed = 2;
+  car_1_2.ativo = 1;
+  car_1_2.collision = 0;
 
-  sprite_t car_1_3 = {end + 120, first_road, 0, 2, 3, 1, 1, 2, 1, 0};
+  car_1_3.coord_x = end + 120;
+  car_1_3.coord_y = first_road;
+  car_1_3.direction = 0;
+  car_1_3.offset = 2;
+  car_1_3.data_register = 3;
+  car_1_3.step_x = 1;
+  car_1_3.step_y = 1;
+  car_1_3.speed = 2;
+  car_1_3.ativo = 1;
+  car_1_3.collision = 0;
 
   /* SECOND ROAD (YELLOW CARS, RIGHT DIRECTION) */
   u16_t second_road = first_road + 40;  // Coodinate y -> número para a coordenada da segunda pista
@@ -206,7 +325,7 @@ void moving_sprites() {
   /* ---------- WATER SPRITES ---------- */
 
   /* FIRST WATER WAY (TRUNK TREE, LEFT DIRECTION) */
-  u16_t first_waterway = 10;  // Coodinate y -> número para a coordenada da primeira pista na água
+  u16_t first_waterway = 50;  // Coodinate y -> número para a coordenada da primeira pista na água
 
   // coord_x, coord_y, direction, offset, data_register, step_x, step_y, speed, ativo, collision
   sprite_t tree_back_1 = {end, first_waterway, 0, 10, 16, 1, 1, 8, 1, 0};
@@ -227,166 +346,397 @@ void moving_sprites() {
   sprite_t tree_front_2 = {end + 40, third_waterway, 0, 8, 23, 1, 1, 10, 1, 0};
 
   /* FOURTH WATER WAY (LILYPAD, RIGHT DIRECTION) */
-  u16_t second_waterway = first_waterway + 40;  // Coodinate y -> número para a coordenada da quarta pista na água
+  u16_t fourth_waterway = third_waterway + 40;  // Coodinate y -> número para a coordenada da quarta pista na água
 
-  sprite_t lilypad_2_1 = {beginning, second_waterway, 1, 4, 24, 1, 1, 9, 1, 0};
-  sprite_t lilypad_2_2 = {beginning + 100, second_waterway, 1, 5, 25, 1, 1, 9, 1, 0};
+  sprite_t lilypad_2_1 = {beginning, fourth_waterway, 1, 4, 24, 1, 1, 9, 1, 0};
+  sprite_t lilypad_2_2 = {beginning + 100, fourth_waterway, 1, 5, 25, 1, 1, 9, 1, 0};
+
+  sprite_t game_sprites[] = {car_1_1,       car_1_2,       car_1_3,        car_2_1,        car_2_2,
+                             car_2_3,       car_4_1,       car_4_2,        car_4_3,        truckback_3_1,
+                             truckback_3_2, truckback_3_3, truckfront_3_1, truckfront_3_2, truckfront_3_3,
+                             tree_back_1,   tree_back_2,   tree_front_1,   tree_front_2,   tree_middle_1,
+                             tree_middle_2, lilypad_1_1,   lilypad_1_2,    lilypad_2_1,    lilypad_2_2};
+
+  u32_t i;
 
   while (1) {
     /*---------- ROAD CONDITIONS ----------*/
 
-    /* FIRST ROAD CONDITIONS */
-    if (car_1_1.coord_x == beginning) {
-      car_1_1.coord_x = end;
+    if (state_game == GAME) {
+      car_1_1.ativo = 1;
+      car_1_2.ativo = 1;
+      car_1_3.ativo = 1;
+      car_2_1.ativo = 1;
+      car_2_2.ativo = 1;
+      car_2_3.ativo = 1;
+      car_4_1.ativo = 1;
+      car_4_2.ativo = 1;
+      car_4_3.ativo = 1;
+      truckback_3_1.ativo = 1;
+      truckback_3_2.ativo = 1;
+      truckback_3_3.ativo = 1;
+      truckfront_3_1.ativo = 1;
+      truckfront_3_2.ativo = 1;
+      truckfront_3_3.ativo = 1;
+      tree_back_1.ativo = 1;
+      tree_back_2.ativo = 1;
+      tree_front_1.ativo = 1;
+      tree_front_2.ativo = 1;
+      tree_middle_1.ativo = 1;
+      tree_middle_2.ativo = 1;
+      lilypad_1_1.ativo = 1;
+      lilypad_1_2.ativo = 1;
+      lilypad_2_1.ativo = 1;
+      lilypad_2_2.ativo = 1;
+
+      /* FIRST ROAD CONDITIONS */
+      if (car_1_1.coord_x == beginning) {
+        car_1_1.coord_x = end;
+      } else {
+        increase_coordinate_sprite(&car_1_1, counter);
+      }
+
+      if (car_1_2.coord_x == beginning) {
+        car_1_2.coord_x = end + 60;
+      } else {
+        increase_coordinate_sprite(&car_1_2, counter);
+      }
+
+      if (car_1_3.coord_x == beginning) {
+        car_1_3.coord_x = end + 120;
+      } else {
+        increase_coordinate_sprite(&car_1_3, counter);
+      }
+
+      /* SECOND ROAD CONDITIONS */
+      if (car_2_1.coord_x == end) {
+        car_2_1.coord_x = beginning;
+      } else {
+        increase_coordinate_sprite(&car_2_1, counter);
+      }
+
+      if (car_2_2.coord_x == end) {
+        car_2_2.coord_x = beginning - 30;
+      } else {
+        increase_coordinate_sprite(&car_2_2, counter);
+      }
+
+      if (car_2_3.coord_x == end) {
+        car_2_3.coord_x = beginning - 60;
+      } else {
+        increase_coordinate_sprite(&car_2_3, counter);
+      }
+
+      /* THIRD  ROAD CONDITIONS */
+      if (truckfront_3_1.coord_x == beginning) {
+        truckfront_3_1.coord_x = end;
+        truckback_3_1.coord_x = end + 20;
+      } else {
+        increase_coordinate_sprite(&truckfront_3_1, counter);
+        increase_coordinate_sprite(&truckback_3_1, counter);
+      }
+
+      if (truckfront_3_2.coord_x == beginning) {
+        truckfront_3_2.coord_x = end + 100;
+        truckback_3_2.coord_x = end + 120;
+      } else {
+        increase_coordinate_sprite(&truckfront_3_2, counter);
+        increase_coordinate_sprite(&truckback_3_2, counter);
+      }
+
+      if (truckfront_3_3.coord_x == beginning) {
+        truckfront_3_3.coord_x = end + 200;
+        truckback_3_3.coord_x = end + 220;
+      } else {
+        increase_coordinate_sprite(&truckfront_3_3, counter);
+        increase_coordinate_sprite(&truckback_3_3, counter);
+      }
+
+      /* FOURTH ROAD CONDITIONS */
+      if (car_4_1.coord_x == end) {
+        car_4_1.coord_x = beginning;
+      } else {
+        increase_coordinate_sprite(&car_4_1, counter);
+      }
+
+      if (car_4_2.coord_x == end) {
+        car_4_2.coord_x = beginning - 30;
+      } else {
+        increase_coordinate_sprite(&car_4_2, counter);
+      }
+
+      if (car_4_3.coord_x == end) {
+        car_4_3.coord_x = beginning - 60;
+      } else {
+        increase_coordinate_sprite(&car_4_3, counter);
+      }
+
+      /*---------- WATER CONDITIONS ----------*/
+
+      /* FIRST WATER WAY CONDITIONS */
+      if (tree_back_1.coord_x == beginning) {
+        tree_back_1.coord_x = end;
+        tree_middle_1.coord_x = end + 20;
+        tree_front_1.coord_x = end + 40;
+      } else {
+        increase_coordinate_sprite(&tree_back_1, counter);
+        increase_coordinate_sprite(&tree_middle_1, counter);
+        increase_coordinate_sprite(&tree_front_1, counter);
+      }
+
+      /* SECOND WATER WAY CONDITIONS */
+      if (lilypad_1_1.coord_x == end) {
+        lilypad_1_1.coord_x = beginning;
+        lilypad_1_2.coord_x = beginning + 20;
+      } else {
+        increase_coordinate_sprite(&lilypad_1_1, counter);
+        increase_coordinate_sprite(&lilypad_1_2, counter);
+      }
+
+      /* THIRD WATER WAY CONDITIONS */
+      if (tree_back_1.coord_x == beginning) {
+        tree_back_1.coord_x = end;
+        tree_middle_1.coord_x = end + 20;
+        tree_front_1.coord_x = end + 40;
+      } else {
+        increase_coordinate_sprite(&tree_back_1, counter);
+        increase_coordinate_sprite(&tree_middle_1, counter);
+        increase_coordinate_sprite(&tree_front_1, counter);
+      }
+
+      /* FOURTH WATER WAY CONDITIONS */
+      if (lilypad_2_1.coord_x == end) {
+        lilypad_2_1.coord_x = beginning;
+        lilypad_2_2.coord_x = beginning + 20;
+      } else {
+        increase_coordinate_sprite(&lilypad_2_1, counter);
+        increase_coordinate_sprite(&lilypad_2_2, counter);
+      }
+
+      counter += 1;
     } else {
-      increase_coordinate_sprite(&car_1_1, counter);
-      set_dynamic_sprite(car_1_1);
+      car_1_1.ativo = 0;
+      car_1_2.ativo = 0;
+      car_1_3.ativo = 0;
+      car_2_1.ativo = 0;
+      car_2_2.ativo = 0;
+      car_2_3.ativo = 0;
+      car_4_1.ativo = 0;
+      car_4_2.ativo = 0;
+      car_4_3.ativo = 0;
+      truckback_3_1.ativo = 0;
+      truckback_3_2.ativo = 0;
+      truckback_3_3.ativo = 0;
+      truckfront_3_1.ativo = 0;
+      truckfront_3_2.ativo = 0;
+      truckfront_3_3.ativo = 0;
+      tree_back_1.ativo = 0;
+      tree_back_2.ativo = 0;
+      tree_front_1.ativo = 0;
+      tree_front_2.ativo = 0;
+      tree_middle_1.ativo = 0;
+      tree_middle_2.ativo = 0;
+      lilypad_1_1.ativo = 0;
+      lilypad_1_2.ativo = 0;
+      lilypad_2_1.ativo = 0;
+      lilypad_2_2.ativo = 0;
     }
 
-    if (car_1_2.coord_x == beginning) {
-      car_1_2.coord_x = end + 60;
-    } else {
-      increase_coordinate_sprite(&car_1_2, counter);
-      set_dynamic_sprite(car_1_2);
-    }
-
-    if (car_1_3.coord_x == beginning) {
-      car_1_3.coord_x = end + 120;
-    } else {
-      increase_coordinate_sprite(&car_1_3, counter);
-      set_dynamic_sprite(car_1_3);
-    }
-
-    /* SECOND ROAD CONDITIONS */
-    if (car_2_1.coord_x == end) {
-      car_2_1.coord_x = beginning;
-    } else {
-      increase_coordinate_sprite(&car_2_1, counter);
-      set_dynamic_sprite(car_2_1);
-    }
-
-    if (car_2_2.coord_x == end) {
-      car_2_2.coord_x = beginning - 30;
-    } else {
-      increase_coordinate_sprite(&car_2_2, counter);
-      set_dynamic_sprite(car_2_2);
-    }
-
-    if (car_2_3.coord_x == end) {
-      car_2_3.coord_x = beginning - 60;
-    } else {
-      increase_coordinate_sprite(&car_2_3, counter);
-      set_dynamic_sprite(car_2_3);
-    }
-
-    /* THIRD  ROAD CONDITIONS */
-    if (truckfront_3_1.coord_x == beginning) {
-      truckfront_3_1.coord_x = end;
-      truckback_3_1.coord_x = end + 20;
-    } else {
-      increase_coordinate_sprite(&truckfront_3_1, counter);
-      increase_coordinate_sprite(&truckback_3_1, counter);
-      set_dynamic_sprite(truckfront_3_1);
-      set_dynamic_sprite(truckback_3_1);
-    }
-
-    if (truckfront_3_2.coord_x == beginning) {
-      truckfront_3_2.coord_x = end + 100;
-      truckback_3_2.coord_x = end + 120;
-    } else {
-      increase_coordinate_sprite(&truckfront_3_2, counter);
-      increase_coordinate_sprite(&truckback_3_2, counter);
-      set_dynamic_sprite(truckfront_3_2);
-      set_dynamic_sprite(truckback_3_2);
-    }
-
-    if (truckfront_3_3.coord_x == beginning) {
-      truckfront_3_3.coord_x = end + 200;
-      truckback_3_3.coord_x = end + 220;
-    } else {
-      increase_coordinate_sprite(&truckfront_3_3, counter);
-      increase_coordinate_sprite(&truckback_3_3, counter);
-      set_dynamic_sprite(truckfront_3_3);
-      set_dynamic_sprite(truckback_3_3);
-    }
-
-    /* FOURTH ROAD CONDITIONS */
-    if (car_4_1.coord_x == end) {
-      car_4_1.coord_x = beginning;
-    } else {
-      increase_coordinate_sprite(&car_4_1, counter);
-      set_dynamic_sprite(car_4_1);
-    }
-
-    if (car_4_2.coord_x == end) {
-      car_4_2.coord_x = beginning - 30;
-    } else {
-      increase_coordinate_sprite(&car_4_2, counter);
-      set_dynamic_sprite(car_4_2);
-    }
-
-    if (car_4_3.coord_x == end) {
-      car_4_3.coord_x = beginning - 60;
-    } else {
-      increase_coordinate_sprite(&car_4_3, counter);
-      set_dynamic_sprite(car_4_3);
-    }
-
-    /*---------- WATER CONDITIONS ----------*/
-
-    /* FIRST WATER WAY CONDITIONS */
-    if (tree_back_1.coord_x == beginning) {
-      tree_back_1.coord_x = end;
-      tree_middle_1.coord_x = end + 20;
-      tree_front_1.coord_x = end + 40;
-    } else {
-      increase_coordinate_sprite(&tree_back_1, counter);
-      increase_coordinate_sprite(&tree_middle_1, counter);
-      increase_coordinate_sprite(&tree_front_1, counter);
-      set_dynamic_sprite(tree_back_1);
-      set_dynamic_sprite(tree_middle_1);
-      set_dynamic_sprite(tree_front_1);
-    }
-
-    /* SECOND WATER WAY CONDITIONS */
-    if (lilypad_1_1.coord_x == end) {
-      lilypad_1_1.coord_x = beginning;
-      lilypad_1_2.coord_x = beginning + 20;
-    } else {
-      increase_coordinate_sprite(&lilypad_1_1, counter);
-      increase_coordinate_sprite(&lilypad_1_2, counter);
-      set_dynamic_sprite(lilypad_1_1);
-      set_dynamic_sprite(lilypad_1_2);
-    }
-
-    /* THIRD WATER WAY CONDITIONS */
-    if (tree_back_1.coord_x == beginning) {
-      tree_back_1.coord_x = end;
-      tree_middle_1.coord_x = end + 20;
-      tree_front_1.coord_x = end + 40;
-    } else {
-      increase_coordinate_sprite(&tree_back_1, counter);
-      increase_coordinate_sprite(&tree_middle_1, counter);
-      increase_coordinate_sprite(&tree_front_1, counter);
-      set_dynamic_sprite(tree_back_1);
-      set_dynamic_sprite(tree_middle_1);
-      set_dynamic_sprite(tree_front_1);
-    }
-
-    /* FOURTH WATER WAY CONDITIONS */
-    if (lilypad_2_1.coord_x == end) {
-      lilypad_2_1.coord_x = beginning;
-      lilypad_2_2.coord_x = beginning + 20;
-    } else {
-      increase_coordinate_sprite(&lilypad_2_1, counter);
-      increase_coordinate_sprite(&lilypad_2_2, counter);
-      set_dynamic_sprite(lilypad_2_1);
-      set_dynamic_sprite(lilypad_2_2);
-    }
-
-    counter += 1;
+    /*Enviando Instruções*/
+    pthread_mutex_lock(&mutex);
+    set_dynamic_sprite(car_1_1);
+    set_dynamic_sprite(car_1_2);
+    set_dynamic_sprite(car_1_3);
+    set_dynamic_sprite(car_2_1);
+    set_dynamic_sprite(car_2_2);
+    set_dynamic_sprite(car_2_3);
+    set_dynamic_sprite(truckfront_3_1);
+    set_dynamic_sprite(truckback_3_1);
+    set_dynamic_sprite(truckfront_3_2);
+    set_dynamic_sprite(truckback_3_2);
+    set_dynamic_sprite(car_1_1);
+    set_dynamic_sprite(car_1_2);
+    set_dynamic_sprite(car_1_3);
+    set_dynamic_sprite(car_2_1);
+    set_dynamic_sprite(car_2_2);
+    set_dynamic_sprite(car_2_3);
+    set_dynamic_sprite(truckfront_3_1);
+    set_dynamic_sprite(truckback_3_1);
+    set_dynamic_sprite(truckfront_3_2);
+    set_dynamic_sprite(truckback_3_2);
+    set_dynamic_sprite(truckfront_3_3);
+    set_dynamic_sprite(truckback_3_3);
+    set_dynamic_sprite(car_4_1);
+    set_dynamic_sprite(car_4_2);
+    set_dynamic_sprite(car_4_3);
+    set_dynamic_sprite(tree_back_1);
+    set_dynamic_sprite(tree_middle_1);
+    set_dynamic_sprite(tree_front_1);
+    set_dynamic_sprite(lilypad_1_1);
+    set_dynamic_sprite(lilypad_1_2);
+    set_dynamic_sprite(lilypad_2_1);
+    set_dynamic_sprite(lilypad_2_2);
+    pthread_mutex_unlock(&mutex);
   }
-  return;
+
+  // moving_sprites(active_bit_movement);
+  pthread_exit(NULL);
 }
 
-void matrix() {}
+void *collision_thread() {
+  while (1) {
+    collision(&cursor, &car_1_1);
+    collision(&cursor, &car_1_2);
+    collision(&cursor, &car_1_3);
+  }
+
+  pthread_exit(NULL);
+}
+
+int main(void) {
+  open_data();
+
+  set_game_sprites();
+
+  state_game = START;
+
+  pthread_mutex_init(&mutex, NULL);
+
+  previous_state = START;
+
+  pthread_t thread_key_id;
+  pthread_t thread_mouse_id;
+  pthread_t thread_visu_id;
+  pthread_t thread_coll_id;
+
+  if (pthread_create(&thread_key_id, NULL, key_thread, NULL) != 0) {
+    perror("Error creating thread");
+    return 1;
+  }
+
+  if (pthread_create(&thread_mouse_id, NULL, mouse_thread, NULL) != 0) {
+    perror("Error creating thread");
+    return 1;
+  }
+
+  if (pthread_create(&thread_visu_id, NULL, visul_thread, NULL) != 0) {
+    perror("Error creating thread");
+    return 1;
+  }
+
+  if (pthread_create(&thread_coll_id, NULL, collision_thread, NULL) != 0) {
+    perror("Error creating thread");
+    return 1;
+  }
+
+  pthread_mutex_lock(&mutex);
+  clean_sprite();
+  pthread_mutex_unlock(&mutex);
+
+  pthread_mutex_lock(&mutex);
+  clean_polygon();
+  pthread_mutex_unlock(&mutex);
+
+  pthread_mutex_lock(&mutex);
+  clean_background();
+  pthread_mutex_unlock(&mutex);
+
+  counter_state = 0;
+
+  while (1) {
+    // printf("STATE GAME: %d\nPREVIOUS STATE: %d\n", state_game, previous_state);
+    switch (state_game) {
+      // printf("%d\n", state_game);
+      case START:
+
+        if (counter_state == 0) {
+          pthread_mutex_lock(&mutex);
+          clean_sprite();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          clean_polygon();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          clean_background();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          // set_background_color(0, 7, 7);
+          init_screen();
+          pthread_mutex_unlock(&mutex);
+        }
+
+        break;
+      case GAME:
+
+        if (counter_state == 0) {
+          pthread_mutex_lock(&mutex);
+          clean_sprite();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          clean_polygon();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          clean_background();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          game_screen();
+          pthread_mutex_unlock(&mutex);
+        }
+
+        /*Verifica a colisão*/
+        if (cursor.collision == 1) {
+          state_game = START;
+          counter_state = 0;
+          cursor.coord_x = 320;
+          cursor.coord_y = 450;
+        }
+
+        break;
+      case PAUSE:
+
+        if (counter_state == 0) {
+          pthread_mutex_lock(&mutex);
+          clean_sprite();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          clean_polygon();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          clean_background();
+          pthread_mutex_unlock(&mutex);
+
+          pthread_mutex_lock(&mutex);
+          set_background_color(7, 7, 0);
+          pthread_mutex_unlock(&mutex);
+        }
+
+        break;
+      // case RESTART:
+      //   pthread_mutex_lock(&mutex);
+      //   clean_sprite();
+      //   pthread_mutex_unlock(&mutex);
+
+      //   pthread_mutex_lock(&mutex);
+      //   clean_polygon();
+      //   pthread_mutex_unlock(&mutex);
+
+      //   pthread_mutex_lock(&mutex);
+      //   clean_background();
+      //   pthread_mutex_unlock(&mutex);
+      //   break;
+      default:
+        break;
+    }
+  }
+
+  close_data();
+  return 0;
+}

@@ -120,6 +120,8 @@ u64_t set_polygon(polygon_t polygon);
 
 u8_t increase_coordinate_sprite(sprite_t *sprite, u32_t counter);
 
+void collision(sprite_t *sprite1, sprite_t *sprite2);
+
 void clean_sprite();
 
 void clean_polygon();
@@ -127,3 +129,5 @@ void clean_polygon();
 void clean_background();
 
 void set_game_sprites();
+
+u8_t open_data();

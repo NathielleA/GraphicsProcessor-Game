@@ -15,10 +15,11 @@
 #include "ui.h"
 
 #define DEVICE_PATH "/dev/gpp_data_bus" /**< Path to device data bus */
+#define SIZE 20
 
 static int device_fd = -1;
 
-void write_data(u64_t data) {
+u8_t open_data() {
   device_fd = open(DEVICE_PATH, O_WRONLY | O_CREAT | O_TRUNC);
 
   if (device_fd == -1) {
@@ -26,14 +27,16 @@ void write_data(u64_t data) {
     exit(EXIT_FAILURE);
   }
 
+  return 0;
+}
+
+void write_data(u64_t data) {
   ssize_t result = write(device_fd, &data, sizeof(data));
 
   if (result == -1) {
     perror("Falha na escrita do dispositivo");
     exit(EXIT_FAILURE);
   }
-
-  close_data(device_fd);
 }
 
 u64_t read_data() {
@@ -165,6 +168,18 @@ u8_t increase_coordinate_sprite(sprite_t *sprite, u32_t counter) {
   }
 
   return 0;
+}
+
+void collision(sprite_t *sprite1, sprite_t *sprite2) {
+  if (sprite1->coord_x < sprite2->coord_x + SIZE && sprite1->coord_x + SIZE > sprite2->coord_x &&
+      sprite1->coord_y < sprite2->coord_y + SIZE && sprite1->coord_y + SIZE > sprite2->coord_y) {
+    sprite1->collision = 1;
+    sprite2->collision = 1;
+  } else {
+    sprite1->collision = 0;
+    sprite2->collision = 0;
+  }
+  return;
 }
 
 void clean_sprite() {

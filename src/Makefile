@@ -5,10 +5,10 @@ BUILD_DIR = $(PWD)/build
 KERNEL_DIR = /lib/modules/$(shell uname -r)/build
 
 # All *.c files.
-SOURCES =  GraphSync.c  NewSprites.c  main.c 
+SOURCES =  GraphSync.c  NewSprites.c  GameVisualization.c main.c 
 
 # All *.h files.
-HEADERS =  utils/types.h  GraphSync.h  NewSprites.h
+HEADERS =  utils/types.h  GraphSync.h  NewSprites.h GameVisualization.h
 
 all: build kernel
 
@@ -17,8 +17,8 @@ build: build/dir build/main
 build/dir:
 	@mkdir -p build
 
-build/main: build/GraphSync.o build/main.o build/NewSprites.o 
-	@gcc build/GraphSync.o build/main.o build/NewSprites.o  -o build/main
+build/main: build/GraphSync.o build/main.o build/NewSprites.o build/GameVisualization.o
+	@gcc build/GraphSync.o build/main.o build/NewSprites.o  build/GameVisualization.o  -o build/main -lpthread
 
 build/GraphSync.o:  GraphSync.c  GraphSync.h  NewSprites.c  NewSprites.h  utils/ui.h  utils/types.h
 	@gcc -c  GraphSync.c -o build/GraphSync.o -Isrc -Iutils
@@ -26,7 +26,10 @@ build/GraphSync.o:  GraphSync.c  GraphSync.h  NewSprites.c  NewSprites.h  utils/
 build/NewSprites.o:  NewSprites.c NewSprites.h utils/ui.h  utils/types.h
 	@gcc -c  NewSprites.c -o build/NewSprites.o -Isrc -Iutils
 
-build/main.o:  main.c  GraphSync.h  utils/ui.h  utils/types.h
+build/GameVisualization.o:  GameVisualization.c GameVisualization.h GraphSync.c  GraphSync.h utils/ui.h  utils/types.h
+	@gcc -c  GameVisualization.c -o build/GameVisualization.o -Isrc -Iutils
+
+build/main.o:  main.c  GraphSync.h NewSprites.h  GameVisualization.h  utils/ui.h  utils/types.h
 	@gcc -c  main.c -o build/main.o -Isrc -Iutils
 
 run: build 
