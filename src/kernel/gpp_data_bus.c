@@ -6,9 +6,7 @@
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
-#include <linux/kfifo.h>
 #include <linux/module.h>
-#include <linux/mutex.h>
 
 #define DEVICE_NAME "gpp_data_bus"
 #define CLASS_NAME "gppdatabus_class"
@@ -36,9 +34,6 @@ void __iomem *data_b_mem;
 void __iomem *wreg_mem;
 void __iomem *wrfull_mem;
 
-struct kfifo instruction_fifo;
-DEFINE_MUTEX(fifo_lock);
-
 /*Declaring default functions and the file operations*/
 static ssize_t data_bus_read(struct file *, char *, size_t, loff_t *);
 static ssize_t data_bus_write(struct file *, const char *, size_t, loff_t *);
@@ -52,36 +47,27 @@ static struct file_operations fops = {.owner = THIS_MODULE,
                                       .release = data_bus_release};
 
 static int __init data_bus_init(void) {
-  printk(KERN_INFO "DataBus: Initializing the DataBus\n");
-
   majorNumber = register_chrdev(0, DEVICE_NAME, &fops);
   if (majorNumber < 0) {
-    printk(KERN_ALERT "DataBus failed to register a major number\n");
     return majorNumber;
   }
-  printk(KERN_INFO "DataBus: registered correctly with major number %d\n", majorNumber);
 
   dataBusClass = class_create(THIS_MODULE, CLASS_NAME);
   if (IS_ERR(dataBusClass)) {
     unregister_chrdev(majorNumber, DEVICE_NAME);
-    printk(KERN_ALERT "Failed to register device class\n");
     return PTR_ERR(dataBusClass);
   }
-  printk(KERN_INFO "DataBus: device class registered correctly\n");
 
   dataBusDevice = device_create(dataBusClass, NULL, MKDEV(majorNumber, 0), NULL, DEVICE_NAME);
   if (IS_ERR(dataBusDevice)) {
     class_destroy(dataBusClass);
     unregister_chrdev(majorNumber, DEVICE_NAME);
-    printk(KERN_ALERT "Failed to create the device\n");
     return PTR_ERR(dataBusDevice);
   }
-  printk(KERN_INFO "DataBus: device class created correctly\n");
 
   /*Mapping memory address for Data A and Data B*/
   data_a_mem = ioremap(DATA_A_PHYS_ADDR, sizeof(uint32_t));
   if (!data_a_mem) {
-    printk(KERN_ALERT "Failed to map memory for DATA_A\n");
     iounmap(data_a_mem);
     device_destroy(dataBusClass, MKDEV(majorNumber, 0));
     class_destroy(dataBusClass);
@@ -91,7 +77,6 @@ static int __init data_bus_init(void) {
 
   data_b_mem = ioremap(DATA_B_PHYS_ADDR, sizeof(uint32_t));
   if (!data_b_mem) {
-    printk(KERN_ALERT "Failed to map memory for DATA_B\n");
     iounmap(data_b_mem);
     device_destroy(dataBusClass, MKDEV(majorNumber, 0));
     class_destroy(dataBusClass);
@@ -101,7 +86,6 @@ static int __init data_bus_init(void) {
 
   wreg_mem = ioremap(WREG_PHYS_ADDR, sizeof(uint32_t));
   if (!wreg_mem) {
-    printk(KERN_ALERT "Failed to map memory for WREG\n");
     iounmap(wreg_mem);
     device_destroy(dataBusClass, MKDEV(majorNumber, 0));
     class_destroy(dataBusClass);
@@ -111,7 +95,6 @@ static int __init data_bus_init(void) {
 
   wrfull_mem = ioremap(WRFULL_PHYS_ADDR, sizeof(uint32_t));
   if (!wrfull_mem) {
-    printk(KERN_ALERT "Failed to map memory for WRFULL\n");
     iounmap(wrfull_mem);
     device_destroy(dataBusClass, MKDEV(majorNumber, 0));
     class_destroy(dataBusClass);
@@ -119,26 +102,10 @@ static int __init data_bus_init(void) {
     return -EIO;
   }
 
-  /* Initialize the FIFO */
-  if (kfifo_alloc(&instruction_fifo, PAGE_SIZE, GFP_KERNEL)) {
-    printk(KERN_ALERT "Failed to allocate FIFO\n");
-    iounmap(data_a_mem);
-    iounmap(data_b_mem);
-    iounmap(wreg_mem);
-    iounmap(wrfull_mem);
-    device_destroy(dataBusClass, MKDEV(majorNumber, 0));
-    class_destroy(dataBusClass);
-    unregister_chrdev(majorNumber, DEVICE_NAME);
-    return -ENOMEM;
-  }
-
-  mutex_init(&fifo_lock);
-
   return 0;
 }
 
 static void __exit data_bus_exit(void) {
-  kfifo_free(&instruction_fifo);
   iounmap(data_a_mem);
   iounmap(data_b_mem);
   iounmap(wreg_mem);
@@ -146,7 +113,6 @@ static void __exit data_bus_exit(void) {
   device_destroy(dataBusClass, MKDEV(majorNumber, 0));
   class_destroy(dataBusClass);
   unregister_chrdev(majorNumber, DEVICE_NAME);
-  printk(KERN_INFO "DataBus Finalized!\n");
 }
 
 static ssize_t data_bus_read(struct file *filep, char *buffer, size_t len, loff_t *offset) {
@@ -171,63 +137,29 @@ static ssize_t data_bus_write(struct file *filep, const char *buffer, size_t len
   uint32_t data_a;
   uint32_t data_b;
 
+  while (ioread32(wrfull_mem)) {
+  }
+
+  uint32_t start = 0x00000000;
+  iowrite32(start, wreg_mem);
+
   if (copy_from_user(&data, buffer, sizeof(data))) {
     return -EFAULT;
   }
 
-  if (mutex_lock_interruptible(&fifo_lock)) {
-    return -ERESTARTSYS;
-  }
+  data_a = (uint32_t)(data & 0xFFFFFFFF);
+  data_b = (uint32_t)(data >> 32);
 
-  /* Add the data to the FIFO */
-  if (!kfifo_put(&instruction_fifo, data)) {
-    mutex_unlock(&fifo_lock);
-    return -EAGAIN;
-  }
+  iowrite32(data_a, data_a_mem);
+  iowrite32(data_b, data_b_mem);
 
-  mutex_unlock(&fifo_lock);
-
-  /* Schedule work to process the FIFO */
-  schedule_work(&process_fifo_work);
+  start = 0x00000001;
+  iowrite32(start, wreg_mem);
 
   return sizeof(data);
 }
 
-static void process_fifo_work(struct work_struct *work) {
-  uint64_t data;
-  uint32_t data_a;
-  uint32_t data_b;
-
-  while (!kfifo_is_empty(&instruction_fifo)) {
-    if (mutex_lock_interruptible(&fifo_lock)) {
-      return;
-    }
-
-    /* Get data from the FIFO */
-    if (!kfifo_get(&instruction_fifo, &data)) {
-      mutex_unlock(&fifo_lock);
-      return;
-    }
-
-    mutex_unlock(&fifo_lock);
-
-    data_a = (uint32_t)(data & 0xFFFFFFFF);
-    data_b = (uint32_t)(data >> 32);
-
-    while (ioread32(wrfull_mem)) {
-      // msleep(1); /* Sleep for 1ms if the buffer is full */
-    }
-
-    iowrite32(data_a, data_a_mem);
-    iowrite32(data_b, data_b_mem);
-
-    uint32_t start = 0x00000001;
-    iowrite32(start, wreg_mem);
-  }
-}
-
 static int data_bus_open(struct inode *inode, struct file *file) {
-  printk(KERN_INFO "File opened!\n");
   return SUCCESS;
 }
 
