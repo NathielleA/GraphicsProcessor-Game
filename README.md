@@ -3,8 +3,15 @@
 </div>
 
 <div align="center">
-<h1> Problema #3 - Desenvolvimento de um Jogo</h1>
+<h2> Problema #3 - Desenvolvimento de um Jogo</h2>
 </div>
 
 > Documentação do projeto da disciplina TEC 499 - Sistemas Digitais, de desenvolvimento em linguagem C de um jogo utilizando o Processador Gráfico presente no kit de Desenvolvimento DE1-SoC.
 
+## Índice
+
+- [Introdução](#introdução)
+- [Hardware Utilizado](#)
+    - [Periféricos Utilizados]()
+    - [Processador Gráfico]()
+    - [Mouse]()  
