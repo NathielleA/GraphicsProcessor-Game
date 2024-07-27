@@ -31,3 +31,11 @@
 - [Regras do Jogo e Jogabilidade]()
 - [Testes, Resultados e Desafios Encontrados]()
 - [Conclusão]()
+
+## Introdução
+
+Este projeto foi desenvolvido para atender aos requisitos do Problema 3 da disciplina TEC499 - Módulo Integrador de Sistemas Digitais. O objetivo principal é desenvolver um jogo utilizando o Módulo Kernel e a Biblioteca de Funções já implementados anteriormente, que foram feitos com o propósito de possibilitar a comunicação entre o processador de propósito geral da placa DE1-SoC e o processador gráfico embarcado na FPGA da mesma placa, e a biblioteca feita para facilitar o acesso geral aos recursos do sistema e o envio de instruções para a GPU. O jogo foi construído utilizando como base esses dois componentes para conexção do hardware da placa com o software da lógica e visualização do jogo.
+
+## Jogo Desenvolvido e seus Requisitos
+
+O jogo digital desenvolvido leva o nome de Croak Rush e se baseia nos jogos o online Frog Dash e o arcade Frogger. Ele consiste em fazer uma família de sapos atravessar uma ruas movimentadas por veículos e rios com correntezas sem que nenhum deles seja atropelado. 
