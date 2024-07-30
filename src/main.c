@@ -61,6 +61,11 @@ sprite_t car_4_3;
 // sprite_t lilypad_2_1;
 // sprite_t lilypad_2_2;
 
+/*- Colocar tela do Gameover e Vitória para mudar com o botão
+  - Colisão das sprites no rio
+  - Sprites dos sapos a cada partida com a condicional contando a quantidade
+*/
+
 void change_state(volatile i32_t *KEY_ptr, volatile i8_t edge_capture) {
   switch (state_game) {
     case START:
