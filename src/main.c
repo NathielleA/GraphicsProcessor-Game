@@ -22,12 +22,18 @@
 #define GAME 1
 #define PAUSE 2
 #define RESTART 3
+#define GAMEOVER 4
+#define VICTORY 5
 
 volatile i8_t state_game;
+// u8_t game_level;
 pthread_mutex_t mutex;
 u8_t previous_state;
 u32_t counter_state;
 sprite_t cursor;
+
+u8_t frogs = 5;
+u8_t life = 5;
 
 sprite_t car_1_1;
 sprite_t car_1_2;
@@ -35,25 +41,15 @@ sprite_t car_1_3;
 sprite_t car_2_1;
 sprite_t car_2_2;
 sprite_t car_2_3;
-// sprite_t truckfront_3_1;
-// sprite_t truckback_3_1;
-// sprite_t truckfront_3_2;
-// sprite_t truckback_3_2;
-// sprite_t car_1_1;
-// sprite_t car_1_2;
-// sprite_t car_1_3;
-// sprite_t car_2_1;
-// sprite_t car_2_2;
-// sprite_t car_2_3;
-// sprite_t truckfront_3_1;
-// sprite_t truckback_3_1;
-// sprite_t truckfront_3_2;
-// sprite_t truckback_3_2;
-// sprite_t truckfront_3_3;
-// sprite_t truckback_3_3;
-// sprite_t car_4_1;
-// sprite_t car_4_2;
-// sprite_t car_4_3;
+sprite_t truckfront_3_1;
+sprite_t truckback_3_1;
+sprite_t truckfront_3_2;
+sprite_t truckback_3_2;
+sprite_t truckfront_3_3;
+sprite_t truckback_3_3;
+sprite_t car_4_1;
+sprite_t car_4_2;
+sprite_t car_4_3;
 // sprite_t tree_back_1;
 // sprite_t tree_middle_1;
 // sprite_t tree_front_1;
@@ -119,11 +115,7 @@ void change_state(volatile i32_t *KEY_ptr, volatile i8_t edge_capture) {
 }
 
 void *key_thread(void *args) {
-  // volatile i8_t *state_game = (volatile i8_t *)args;
-
   static i32_t fd_map = -1;
-
-  // counter_state = 0;
 
   fd_map = open("/dev/mem", (O_RDWR | O_SYNC));
   if (fd_map == -1) {
@@ -155,12 +147,12 @@ void *key_thread(void *args) {
     change_state(KEY_ptr, edge_capture);
 
     if (previous_state == state_game) {
-      counter_state += 1;
+      counter_state = 1;
     } else {
       counter_state = 0;
     }
 
-    printf("COUNTER: %d\n", counter_state);
+    // printf("COUNTER: %d\n", counter_state);
   }
 
   if (munmap(LW_virtual, LW_BRIDGE_SPAN) == -1) {
@@ -191,6 +183,9 @@ void *mouse_thread() {
   cursor.offset = 1;
   cursor.coord_x = 320;
   cursor.coord_y = 450;
+  cursor.step_x = 1;
+  cursor.step_y = 1;
+  cursor.speed = 40;
   cursor.collision = 0;
 
   // Abrindo o dispositivo do mouse (adapte o caminho conforme necessário)
@@ -210,7 +205,7 @@ void *mouse_thread() {
     if (state_game == GAME) {
       cursor.ativo = 1;
 
-      if (ev_mouse.type == EV_REL && ev_mouse.code == REL_X) {
+      if (ev_mouse.type == EV_REL && ev_mouse.code == REL_X && cursor.coord_y > 200) {
         cursor.coord_x += ev_mouse.value;
       }
 
@@ -219,30 +214,19 @@ void *mouse_thread() {
       } else if (ev_mouse.type == EV_KEY && ev_mouse.code == BTN_RIGHT) {
         cursor.coord_y += 10;
       }
-      pthread_mutex_lock(&mutex);
-      set_dynamic_sprite(cursor);
-      pthread_mutex_unlock(&mutex);
+      printf("%d\n", cursor.coord_y);
+
+      // pthread_mutex_lock(&mutex);
+      // set_dynamic_sprite(cursor);
+      // pthread_mutex_unlock(&mutex);
+
     } else {
       cursor.ativo = 0;
-      pthread_mutex_lock(&mutex);
-      set_dynamic_sprite(cursor);
-      pthread_mutex_unlock(&mutex);
+      // pthread_mutex_lock(&mutex);
+      // clean_sprite();
+      // set_dynamic_sprite(cursor);
+      // pthread_mutex_unlock(&mutex);
     }
-
-    // if (state_game == GAME && ev_mouse.type == EV_REL && ev_mouse.code == REL_X) {
-    //   cursor.coord_x += ev_mouse.value;
-    //   set_dynamic_sprite(cursor);
-    // }
-
-    // if (state_game == GAME && ev_mouse.type == EV_KEY && ev_mouse.code == BTN_LEFT) {
-    //   cursor.coord_y -= 10;
-    //   set_dynamic_sprite(cursor);
-    // } else if (state_game == GAME && ev_mouse.type == EV_KEY && ev_mouse.code == BTN_RIGHT) {
-    //   cursor.coord_y += 10;
-    //   set_dynamic_sprite(cursor);
-    // }
-
-    // set_dynamic_sprite(cursor);
   }
 
   pthread_exit(NULL);
@@ -296,32 +280,148 @@ void *visul_thread() {
   /* SECOND ROAD (YELLOW CARS, RIGHT DIRECTION) */
   u16_t second_road = first_road + 40;  // Coodinate y -> número para a coordenada da segunda pista
 
-  car_2_1 = {beginning, second_road, 1, 3, 4, 1, 1, 4, 1, 0};
+  car_2_1.coord_x = beginning;
+  car_2_1.coord_y = second_road;
+  car_2_1.direction = 1;
+  car_2_1.offset = 3;
+  car_2_1.data_register = 4;
+  car_2_1.step_x = 1;
+  car_2_1.step_y = 1;
+  car_2_1.speed = 4;
+  car_2_1.ativo = 1;
+  car_2_1.collision = 0;
 
-  car_2_2 = {beginning + 30, second_road, 1, 3, 5, 1, 1, 4, 1, 0};
+  car_2_2.coord_x = beginning + 30;
+  car_2_2.coord_y = second_road;
+  car_2_2.direction = 1;
+  car_2_2.offset = 3;
+  car_2_2.data_register = 5;
+  car_2_2.step_x = 1;
+  car_2_2.step_y = 1;
+  car_2_2.speed = 4;
+  car_2_2.ativo = 1;
+  car_2_2.collision = 0;
 
-  car_2_3 = {beginning + 60, second_road, 1, 3, 6, 1, 1, 4, 1, 0};
+  car_2_3.coord_x = beginning + 60;
+  car_2_3.coord_y = second_road;
+  car_2_3.direction = 1;
+  car_2_3.offset = 3;
+  car_2_3.data_register = 6;
+  car_2_3.step_x = 1;
+  car_2_3.step_y = 1;
+  car_2_3.speed = 4;
+  car_2_3.ativo = 1;
+  car_2_3.collision = 0;
 
   /* THRID ROAD (TRUCKS, LEFT DIRECTION) */
   u16_t third_road = second_road + 40;  // Coodinate y -> número para a coordenada da terceira pista
 
-  sprite_t truckfront_3_1 = {end, third_road, 0, 6, 7, 1, 1, 3, 1, 0};
-  sprite_t truckback_3_1 = {end + 20, third_road, 0, 7, 8, 1, 1, 3, 1, 0};
+  truckfront_3_1.coord_x = end;
+  truckfront_3_1.coord_y = third_road;
+  truckfront_3_1.direction = 0;
+  truckfront_3_1.offset = 6;
+  truckfront_3_1.data_register = 7;
+  truckfront_3_1.step_x = 1;
+  truckfront_3_1.step_y = 1;
+  truckfront_3_1.speed = 3;
+  truckfront_3_1.ativo = 1;
+  truckfront_3_1.collision = 0;
 
-  sprite_t truckfront_3_2 = {end + 100, third_road, 0, 6, 9, 1, 1, 3, 1, 0};
-  sprite_t truckback_3_2 = {end + 120, third_road, 0, 7, 10, 1, 1, 3, 1, 0};
+  truckback_3_1.coord_x = end + 20;
+  truckback_3_1.coord_y = third_road;
+  truckback_3_1.direction = 0;
+  truckback_3_1.offset = 7;
+  truckback_3_1.data_register = 8;
+  truckback_3_1.step_x = 1;
+  truckback_3_1.step_y = 1;
+  truckback_3_1.speed = 3;
+  truckback_3_1.ativo = 1;
+  truckback_3_1.collision = 0;
+
+  //------------------------------------
+
+  truckfront_3_2.coord_x = end + 100;
+  truckfront_3_2.coord_y = third_road;
+  truckfront_3_2.direction = 0;
+  truckfront_3_2.offset = 6;
+  truckfront_3_2.data_register = 9;
+  truckfront_3_2.step_x = 1;
+  truckfront_3_2.step_y = 1;
+  truckfront_3_2.speed = 3;
+  truckfront_3_2.ativo = 1;
+  truckfront_3_2.collision = 0;
+
+  truckback_3_2.coord_x = end + 120;
+  truckback_3_2.coord_y = third_road;
+  truckback_3_2.direction = 0;
+  truckback_3_2.offset = 7;
+  truckback_3_2.data_register = 10;
+  truckback_3_2.step_x = 1;
+  truckback_3_2.step_y = 1;
+  truckback_3_2.speed = 3;
+  truckback_3_2.ativo = 1;
+  truckback_3_2.collision = 0;
+
+  //------------------------------------
 
   sprite_t truckfront_3_3 = {end + 200, third_road, 0, 6, 11, 1, 1, 3, 1, 0};
-  sprite_t truckback_3_3 = {end + 220, third_road, 0, 7, 12, 1, 1, 3, 1, 0};
+  truckfront_3_3.coord_x = end + 200;
+  truckfront_3_3.coord_y = third_road;
+  truckfront_3_3.direction = 0;
+  truckfront_3_3.offset = 6;
+  truckfront_3_3.data_register = 11;
+  truckfront_3_3.step_x = 1;
+  truckfront_3_3.step_y = 1;
+  truckfront_3_3.speed = 3;
+  truckfront_3_3.ativo = 1;
+  truckfront_3_3.collision = 0;
+
+  truckback_3_3.coord_x = end + 220;
+  truckback_3_3.coord_y = third_road;
+  truckback_3_3.direction = 0;
+  truckback_3_3.offset = 7;
+  truckback_3_3.data_register = 12;
+  truckback_3_3.step_x = 1;
+  truckback_3_3.step_y = 1;
+  truckback_3_3.speed = 3;
+  truckback_3_3.ativo = 1;
+  truckback_3_3.collision = 0;
 
   /* FOURTH ROAD (GREEN CARS, RIGHT DIRECTION) */
   u16_t fourth_road = third_road + 40;  // Coodinate y -> número para a coordenada da quarta pista
 
-  sprite_t car_4_1 = {beginning, fourth_road, 1, 3, 13, 1, 1, 1, 1, 0};
+  car_4_1.coord_x = beginning;
+  car_4_1.coord_y = fourth_road;
+  car_4_1.direction = 1;
+  car_4_1.offset = 3;
+  car_4_1.data_register = 13;
+  car_4_1.step_x = 1;
+  car_4_1.step_y = 1;
+  car_4_1.speed = 1;
+  car_4_1.ativo = 1;
+  car_4_1.collision = 0;
 
-  sprite_t car_4_2 = {beginning + 30, fourth_road, 1, 3, 14, 1, 1, 1, 1, 0};
+  car_4_2.coord_x = beginning + 30;
+  car_4_2.coord_y = fourth_road;
+  car_4_2.direction = 1;
+  car_4_2.offset = 3;
+  car_4_2.data_register = 14;
+  car_4_2.step_x = 1;
+  car_4_2.step_y = 1;
+  car_4_2.speed = 1;
+  car_4_2.ativo = 1;
+  car_4_2.collision = 0;
 
-  sprite_t car_4_3 = {beginning + 60, fourth_road, 1, 3, 15, 1, 1, 1, 1, 0};
+  car_4_3.coord_x = beginning + 60;
+  car_4_3.coord_y = fourth_road;
+  car_4_3.direction = 1;
+  car_4_3.offset = 3;
+  car_4_3.data_register = 15;
+  car_4_3.step_x = 1;
+  car_4_3.step_y = 1;
+  car_4_3.speed = 1;
+  car_4_3.ativo = 1;
+  car_4_3.collision = 0;
 
   /* ---------- WATER SPRITES ---------- */
 
@@ -352,16 +452,12 @@ void *visul_thread() {
   sprite_t lilypad_2_1 = {beginning, fourth_waterway, 1, 4, 24, 1, 1, 9, 1, 0};
   sprite_t lilypad_2_2 = {beginning + 100, fourth_waterway, 1, 5, 25, 1, 1, 9, 1, 0};
 
-  sprite_t game_sprites[] = {car_1_1,       car_1_2,       car_1_3,        car_2_1,        car_2_2,
-                             car_2_3,       car_4_1,       car_4_2,        car_4_3,        truckback_3_1,
-                             truckback_3_2, truckback_3_3, truckfront_3_1, truckfront_3_2, truckfront_3_3,
-                             tree_back_1,   tree_back_2,   tree_front_1,   tree_front_2,   tree_middle_1,
-                             tree_middle_2, lilypad_1_1,   lilypad_1_2,    lilypad_2_1,    lilypad_2_2};
-
-  u32_t i;
-
   while (1) {
     /*---------- ROAD CONDITIONS ----------*/
+
+    if (previous_state != GAME) {
+      usleep(10);
+    }
 
     if (state_game == GAME) {
       car_1_1.ativo = 1;
@@ -548,33 +644,47 @@ void *visul_thread() {
     set_dynamic_sprite(car_1_1);
     set_dynamic_sprite(car_1_2);
     set_dynamic_sprite(car_1_3);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
     set_dynamic_sprite(car_2_1);
     set_dynamic_sprite(car_2_2);
     set_dynamic_sprite(car_2_3);
-    set_dynamic_sprite(truckfront_3_1);
-    set_dynamic_sprite(truckback_3_1);
-    set_dynamic_sprite(truckfront_3_2);
-    set_dynamic_sprite(truckback_3_2);
-    set_dynamic_sprite(car_1_1);
-    set_dynamic_sprite(car_1_2);
-    set_dynamic_sprite(car_1_3);
-    set_dynamic_sprite(car_2_1);
-    set_dynamic_sprite(car_2_2);
-    set_dynamic_sprite(car_2_3);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
     set_dynamic_sprite(truckfront_3_1);
     set_dynamic_sprite(truckback_3_1);
     set_dynamic_sprite(truckfront_3_2);
     set_dynamic_sprite(truckback_3_2);
     set_dynamic_sprite(truckfront_3_3);
     set_dynamic_sprite(truckback_3_3);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
     set_dynamic_sprite(car_4_1);
     set_dynamic_sprite(car_4_2);
     set_dynamic_sprite(car_4_3);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
     set_dynamic_sprite(tree_back_1);
     set_dynamic_sprite(tree_middle_1);
     set_dynamic_sprite(tree_front_1);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
+    set_dynamic_sprite(tree_back_2);
+    set_dynamic_sprite(tree_middle_2);
+    set_dynamic_sprite(tree_front_2);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
     set_dynamic_sprite(lilypad_1_1);
     set_dynamic_sprite(lilypad_1_2);
+    pthread_mutex_unlock(&mutex);
+
+    pthread_mutex_lock(&mutex);
     set_dynamic_sprite(lilypad_2_1);
     set_dynamic_sprite(lilypad_2_2);
     pthread_mutex_unlock(&mutex);
@@ -592,6 +702,17 @@ void *collision_thread() {
     collision(&cursor, &car_2_1);
     collision(&cursor, &car_2_2);
     collision(&cursor, &car_2_3);
+
+    collision(&cursor, &truckfront_3_1);
+    collision(&cursor, &truckback_3_1);
+    collision(&cursor, &truckfront_3_2);
+    collision(&cursor, &truckback_3_2);
+    collision(&cursor, &truckfront_3_3);
+    collision(&cursor, &truckback_3_3);
+
+    collision(&cursor, &car_4_1);
+    collision(&cursor, &car_4_2);
+    collision(&cursor, &car_4_3);
   }
 
   pthread_exit(NULL);
@@ -635,17 +756,14 @@ int main(void) {
 
   pthread_mutex_lock(&mutex);
   clean_sprite();
-  pthread_mutex_unlock(&mutex);
-
-  pthread_mutex_lock(&mutex);
   clean_polygon();
-  pthread_mutex_unlock(&mutex);
-
-  pthread_mutex_lock(&mutex);
   clean_background();
+  init_screen();
   pthread_mutex_unlock(&mutex);
 
   counter_state = 0;
+  // game_level = 0;
+  u16_t counter_river = 0;
 
   while (1) {
     switch (state_game) {
@@ -690,15 +808,51 @@ int main(void) {
           pthread_mutex_unlock(&mutex);
         }
 
-        /*Verifica a colisão*/
-        if (cursor.collision == 1) {
-          gameover_screen();
-          sleep(1);
-          state_game = START;
-          counter_state = 0;
+        if (cursor.coord_y <= 200 && cursor.coord_y > 150) {
+          cursor.direction = 1;
+          counter_river += 1;
+          increase_coordinate_sprite(&cursor, counter_river);
+        } else if (cursor.coord_y <= 150 && cursor.coord_y > 110) {
+          cursor.direction = 0;
+          counter_river += 1;
+          increase_coordinate_sprite(&cursor, counter_river);
+        } else if (cursor.coord_y <= 110 && cursor.coord_y > 70) {
+          cursor.direction = 1;
+          counter_river += 1;
+          increase_coordinate_sprite(&cursor, counter_river);
+        } else if (cursor.coord_y <= 70 && cursor.coord_y > 20) {
+          cursor.direction = 0;
+          counter_river += 1;
+          increase_coordinate_sprite(&cursor, counter_river);
+        } else if (cursor.coord_y <= 20) {
+          frogs -= 1;
           cursor.coord_x = 320;
           cursor.coord_y = 450;
         }
+
+        if (frogs == 0) {
+          state_game = VICTORY;
+        }
+
+        /*Verifica a colisão*/
+        if (life) {
+          if (cursor.collision == 1) {
+            life -= 1;
+            cursor.coord_x = 320;
+            cursor.coord_y = 450;
+          }
+        } else {
+          state_game = GAMEOVER;  // Lembrar de ir para restart
+        }
+        // if (cursor.collision == 1) {
+        //   life -= 1;
+        // } else if (cursor.collision == 1 && life <= 0) {
+        //   state_game = GAMEOVER;
+        // }
+
+        pthread_mutex_lock(&mutex);
+        set_dynamic_sprite(cursor);
+        pthread_mutex_unlock(&mutex);
 
         break;
       case PAUSE:
@@ -720,9 +874,35 @@ int main(void) {
           pause_screen();
           pthread_mutex_unlock(&mutex);
         }
+        pthread_mutex_lock(&mutex);
+        clean_sprite();
+        pthread_mutex_unlock(&mutex);
 
         break;
+      case GAMEOVER:
+        pthread_mutex_lock(&mutex);
+        gameover_screen();
+        pthread_mutex_unlock(&mutex);
+        sleep(5);
 
+        counter_state = 0;
+        // cursor.coord_x = 320;
+        // cursor.coord_y = 450;
+        state_game = START;
+
+        break;
+      case VICTORY:
+        pthread_mutex_lock(&mutex);
+        victory_screen();
+        pthread_mutex_unlock(&mutex);
+        sleep(5);
+
+        counter_state = 0;
+        cursor.coord_x = 320;
+        cursor.coord_y = 450;
+        state_game = START;
+
+        break;
       default:
         break;
     }
