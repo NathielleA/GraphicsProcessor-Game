@@ -69,4 +69,30 @@ A utilização do sistema operacional Linux embarcado na placa, juntamente com a
 
 - ### Periféricos Utilizados
 
+Para o desenvolvimento do jogo na plataforma DE1-SoC, diferentes periféricos e componentes da placa foram utilizados para proporcionar uma experiência interativa e cumprir os requisitos estabelecidos. A seguir, é descrito como cada um desses periféricos foi integrado e utilizado no projeto:
 
+#### Entrada VGA
+A entrada VGA da placa DE1-SoC foi utilizada para a conexão com um monitor externo, permitindo a exibição dos elementos gráficos do jogo. A GPU implementada na FPGA envia sinais de vídeo para o monitor através dessa interface, possibilitando a visualização de gráficos em resolução de 640x480 pixels.
+
+IMAGEM DO PERIFÉRICO AQUI
+
+#### Entrada USB
+A entrada USB foi empregada para conectar um mouse à placa, que serve como dispositivo de controle do ator principal do jogo. A interação do jogador com o mouse é capturada e processada pelo HPS (Hard Processor System), que então comunica as ações do jogador à GPU para atualizar a posição e os movimentos do personagem principal na tela.
+
+IMAGEM DO PERIFÉRICO AQUI
+
+#### Botões
+Os botões disponíveis na placa DE1-SoC foram configurados para funções específicas no jogo, como troca de telas, pausa e reinício. Esses botões oferecem uma forma simples e direta de controle adicional, permitindo ao jogador pausar o jogo, reiniciar o jogo ou navegar entre diferentes telas.
+
+IMAGEM DO PERIFÉRICO AQUI
+
+#### Display de 7 Segmentos
+O display de 7 segmentos na placa foi utilizado para exibir informações críticas do jogo, como a quantidade de vidas e sapos restantes. Esse display proporciona uma forma clara e imediata de feedback visual ao jogador, ajudando a manter o controle do progresso e do estado do jogo.
+
+IMAGEM DO PERIFÉRICO AQUI
+
+- ### Uso do Mouse
+
+- ### Software e Ferramentas
+
+Além dos recursos já descrittos acima, foram utilizadas algumas plataformas e linguagem para auxílio do desenvolvimento (que será descrito melhor posteriormente). Para o desenho e redimensionamento, tanto das telas como das novas sprites foi utilizado o site [Pixilart](https://www.pixilart.com/). Ademais, os códigos para conversão dos pixel das imagens PNG em uma matriz RGB foi implementados em linguagem Python.
