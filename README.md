@@ -13,7 +13,7 @@
 - [Introdução](#introdução)
 - [Jogo Desenvolvido e seus Requisitos]()
 - [Recursos Utilizados](#)
-    - [Processador do Kit de Desenvolvimento]()
+    - [Kit de Desenvolvimento]()
         - [Componentes Internos da FPGA]()
     - [Processador Gráfico]()
     - [Periféricos Utilizados]()
@@ -42,7 +42,11 @@ O jogo digital desenvolvido leva o nome de Croak Rush e se baseia nos jogos: o o
 
 Para que o produto final seguísse um padrão de desenvolvimento, alguns requisitos deveriam ser seguidos. O principal deles é, que o seu ator principal se movimente através de um mouse conectado à placa e outros atores se movimentando de forma independente no jogo. Nesse caso, o ator principal controlado pelo mouse é o sapo e os atores independentes são os carros e objetos em movimento. 
 
-Ademais, os outros requisitos consistem em:
+Ademais, alguns outros requisitos consistem em:
 
 - As informações do vida e quantidade de sapos que atravessaram deve ser exibida no display de 7 segmentos;
-- 
+- A movimentação do mouse deve refletir no ator principal tanto em direção como em velocidade;
+- Ações do usuário, como pausar e reiniciar o jogo, devem ser feitas através dos botões da placa;
+
+## Recursos Utilizados
+
