@@ -93,6 +93,12 @@ IMAGEM DO PERIFÉRICO AQUI
 
 - ### Uso do Mouse
 
+
+
 - ### Software e Ferramentas
 
-Além dos recursos já descrittos acima, foram utilizadas algumas plataformas e linguagem para auxílio do desenvolvimento (que será descrito melhor posteriormente). Para o desenho e redimensionamento, tanto das telas como das novas sprites foi utilizado o site [Pixilart](https://www.pixilart.com/). Ademais, os códigos para conversão dos pixel das imagens PNG em uma matriz RGB foi implementados em linguagem Python.
+Além dos recursos já descritos acima, foram utilizadas algumas plataformas e linguagem para auxílio do desenvolvimento (que serão descritos melhor posteriormente). Para o desenho e redimensionamento, tanto das telas como das novas sprites foi utilizado o site [Pixilart](https://www.pixilart.com/). Ademais, os códigos para conversão dos pixel das imagens PNG em uma matriz RGB foi implementados em [linguagem Python](https://www.python.org/).
+
+## Threads e Sincronização
+
+
