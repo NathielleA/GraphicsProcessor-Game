@@ -42,4 +42,7 @@ O jogo digital desenvolvido leva o nome de Croak Rush e se baseia nos jogos: o o
 
 Para que o produto final seguísse um padrão de desenvolvimento, alguns requisitos deveriam ser seguidos. O principal deles é, que o seu ator principal se movimente através de um mouse conectado à placa e outros atores se movimentando de forma independente no jogo. Nesse caso, o ator principal controlado pelo mouse é o sapo e os atores independentes são os carros e objetos em movimento. 
 
-Ademais, os outros requisitos consistem em
+Ademais, os outros requisitos consistem em:
+
+- As informações do vida e quantidade de sapos que atravessaram deve ser exibida no display de 7 segmentos;
+- 
