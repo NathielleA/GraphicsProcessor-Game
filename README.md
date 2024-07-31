@@ -14,7 +14,6 @@
 - [Jogo Desenvolvido e seus Requisitos]()
 - [Recursos Utilizados](#)
     - [Kit de Desenvolvimento]()
-        - [Componentes Internos da FPGA]()
     - [Processador Gráfico]()
     - [Periféricos Utilizados]()
     - [Uso do Mouse]()
@@ -49,4 +48,15 @@ Ademais, alguns outros requisitos consistem em:
 - Ações do usuário, como pausar e reiniciar o jogo, devem ser feitas através dos botões da placa;
 
 ## Recursos Utilizados
+
+- ### Kit de Desenvolvimento
+
+O placa utilizada para o desenvolvimento do jogo foi a DE1-SoC (Figura 1). O sistema inclui um processador rígido (HPS) baseado em ARM, além de periféricos e interfaces de memória integradas ao FPGA. A placa também suporta uma distribuição Linux embarcada, proporcionando um grande ambiente para desenvolvimento.
+
+O processador de propósito geral (HPS - Hard Processor System) presente na placa de desenvolvimento é um processador dual-core, permitindo a execução de múltiplas tarefas simultaneamente. Este HPS está integrado ao FPGA (Field Programmable Gate Array) Cyclone V, proporcionando uma combinação de processamento de software e hardware reconfigurável. A arquitetura do HPS inclui interfaces de memória como DDR3, interfaces de comunicação como Ethernet e USB, e periféricos adicionais como UART, SPI e I2C, que facilitam a conectividade e expansão do sistema.
+
+A integração do HPS com o FPGA permite uma comunicação entre os dois, através de uma interconexão de barramento Lightweight HPS para FPGA. Isso possibilita que partes do processamento que demandam alta performance ou operações específicas sejam descarregadas para o FPGA, enquanto o HPS gerencia tarefas de controle, gerenciamento e operações complexas de software.
+
+- ### Processador Gráfico
+
 
