@@ -38,4 +38,4 @@ Este projeto foi desenvolvido para atender aos requisitos do Problema 3 da disci
 
 ## Jogo Desenvolvido e seus Requisitos
 
-O jogo digital desenvolvido leva o nome de Croak Rush e se baseia nos jogos: o online Frog Dash, o arcade Frogger e o mobile C. Ele consiste em fazer uma família de sapos atravessar uma ruas movimentadas por veículos e rios com correntezas sem que nenhum deles seja atropelado. 
+O jogo digital desenvolvido leva o nome de Croak Rush e se baseia nos jogos: o online Frog Dash, o arcade Frogger e o mobile Crossy Road. Ele consiste em fazer uma família de sapos atravessar ruas movimentadas por veículos e rios com correntezas sem que nenhum deles seja atropelado. 
