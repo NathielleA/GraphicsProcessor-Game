@@ -101,4 +101,43 @@ Além dos recursos já descritos acima, foram utilizadas algumas plataformas e l
 
 ## Threads e Sincronização
 
+A utilização de threads foi uma parte crucial no desenvolvimento do jogo, permitindo a execução de múltiplos códigos em paralelo de forma sincronizada.
+
+#### O que é uma Thread?
+Uma thread é a menor unidade de processamento que pode ser realizada em um sistema operacional. Diferente de um processo, que possui seu próprio espaço de memória, uma thread compartilha o mesmo espaço de memória do processo ao qual pertence, permitindo uma comunicação rápida e eficiente entre threads dentro do mesmo processo.
+
+#### Funcionamento de Threads
+As threads permitem a execução de diferentes partes de um programa simultaneamente. Cada thread possui seu próprio conjunto de registros, pilha e contador de programa, mas compartilha recursos como memória e arquivos abertos com outras threads do mesmo processo. Isso facilita a execução concorrente de tarefas, como atualizações gráficas e controle de entrada do usuário no contexto de um jogo.
+
+#### Benefícios de Usar Threads
+- **Paralelismo**: Permite que diferentes tarefas sejam executadas simultaneamente, melhorando o desempenho e a eficiência do sistema.
+- **Responsividade**: Melhora a responsividade do programa, especialmente em aplicações interativas como jogos, ao manter a interface do usuário ativa enquanto outras operações são realizadas em segundo plano.
+- **Economia de Recursos**: Compartilhando o mesmo espaço de memória, as threads são mais leves e consomem menos recursos do que processos separados.
+
+#### Malefícios de Usar Threads
+- **Complexidade**: A programação com threads é mais complexa devido à necessidade de gerenciar a sincronização e comunicação entre elas.
+- **Problemas de Sincronização**: Sem a devida sincronização, threads podem acessar recursos compartilhados de maneira conflitante, levando a problemas como race conditions.
+- **Debugging Difícil**: Bugs em programas multithreaded são mais difíceis de reproduzir e corrigir devido à natureza concorrente das operações.
+
+#### Problemas de Sincronização e Suas Soluções
+Um dos principais desafios ao usar threads é garantir que elas acessem recursos compartilhados de maneira segura. Problemas de sincronização comuns incluem:
+
+- **Race Conditions**: Ocorrências onde múltiplas threads tentam ler e escrever em um recurso compartilhado simultaneamente, causando resultados inesperados.
+- **Deadlocks**: Situações onde duas ou mais threads ficam bloqueadas esperando que a outra libere um recurso, resultando em uma paralisação do programa.
+
+##### Uso de Mutex para Sincronização
+Para evitar problemas de sincronização, mecanismos como mutexes (mutual exclusions) são usados. Um mutex é uma variável que pode ser travada ou destravada por threads, garantindo que apenas uma thread acesse um recurso compartilhado por vez. Quando uma thread deseja acessar o recurso, ela tenta adquirir o mutex. Se o mutex já estiver em uso, a thread é bloqueada até que o mutex seja liberado.
+
+#### Problemas de Data Race
+Data race ocorre quando duas ou mais threads tentam acessar e modificar o mesmo registrador ou variável simultaneamente sem a devida sincronização. Isso pode levar a resultados incorretos e comportamento imprevisível do programa. Utilizando mutexes ou outras técnicas de sincronização, é possível evitar data races ao assegurar que apenas uma thread por vez modifique um dado específico.
+
+#### Gerenciamento de Threads pelo Sistema Operacional
+O sistema operacional (SO) é responsável por gerenciar a criação, execução e destruição de threads. Na DE1-SoC, que possui um processador dual-core ARM Cortex-A9, apenas duas threads podem ser executadas em paralelo. No entanto, o SO pode criar várias threads e utilizar técnicas de escalonamento (scheduling) para alternar entre elas, dando a impressão de que múltiplas threads estão sendo executadas simultaneamente.
+
+O SO administra o tempo de CPU para cada thread, utilizando algoritmos como round-robin ou prioridade para decidir qual thread deve ser executada em um dado momento. Esse gerenciamento eficiente permite que todas as threads tenham a oportunidade de serem executadas, mesmo que a quantidade de threads seja maior que o número de núcleos disponíveis.
+
+Em suma, a implementação de threads no desenvolvimento do jogo permitiu a execução paralela e sincronizada de diferentes partes do código, melhorando a eficiência e a responsividade da aplicação. No entanto, a utilização de threads também introduziu desafios de sincronização, que foram mitigados com o uso de mutexes e outras técnicas de controle de acesso a recursos compartilhados. O gerenciamento de threads pelo sistema operacional garantiu que todas as threads tivessem a oportunidade de serem executadas, mesmo com as limitações de hardware da DE1-SoC.
+
+## Etapas da Implementação do Jogo
+
 
