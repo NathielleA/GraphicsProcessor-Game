@@ -25,6 +25,22 @@
 #define GAMEOVER 4
 #define VICTORY 5
 
+#define HEX5_BASE 0x10
+#define HEX4_BASE 0x20
+#define HEX3_BASE 0x30
+#define HEX2_BASE 0x40
+#define HEX1_BASE 0x50
+#define HEX0_BASE 0x60
+
+typedef struct display_t {
+  u64_t *HEX5_ptr;
+  u64_t *HEX4_ptr;
+  u64_t *HEX3_ptr;
+  u64_t *HEX2_ptr;
+  u64_t *HEX1_ptr;
+  u64_t *HEX0_ptr;
+} display_t;
+
 volatile i8_t state_game;
 // u8_t game_level;
 pthread_mutex_t mutex;
@@ -32,8 +48,8 @@ u8_t previous_state;
 u32_t counter_state;
 sprite_t cursor;
 
-u8_t frogs = 5;
-u8_t life = 5;
+u8_t frogs;
+u8_t life;
 
 sprite_t car_1_1;
 sprite_t car_1_2;
@@ -50,19 +66,19 @@ sprite_t truckback_3_3;
 sprite_t car_4_1;
 sprite_t car_4_2;
 sprite_t car_4_3;
-// sprite_t tree_back_1;
-// sprite_t tree_middle_1;
-// sprite_t tree_front_1;
-// sprite_t tree_back_2;
-// sprite_t tree_middle_2;
-// sprite_t tree_front_2;
-// sprite_t lilypad_1_1;
-// sprite_t lilypad_1_2;
-// sprite_t lilypad_2_1;
-// sprite_t lilypad_2_2;
+sprite_t tree_back_1;
+sprite_t tree_middle_1;
+sprite_t tree_front_1;
+sprite_t tree_back_2;
+sprite_t tree_middle_2;
+sprite_t tree_front_2;
+sprite_t lilypad_1_1;
+sprite_t lilypad_1_2;
+sprite_t lilypad_2_1;
+sprite_t lilypad_2_2;
 
-/*- Colocar tela do Gameover e Vitória para mudar com o botão
-  - Colisão das sprites no rio
+/*-
+  -
   - Sprites dos sapos a cada partida com a condicional contando a quantidade
 */
 
@@ -104,6 +120,30 @@ void change_state(volatile i32_t *KEY_ptr, volatile i8_t edge_capture) {
         state_game = PAUSE;
         previous_state = PAUSE;
       }
+      break;
+
+    case GAMEOVER:
+
+      if (*KEY_ptr == 0b0111 && edge_capture) {  // primeiro botão da placa, tecla pressionada
+        state_game = START;
+        previous_state = GAMEOVER;
+      } else if (*KEY_ptr == 0b1111) {
+        state_game = GAMEOVER;
+        previous_state = GAMEOVER;
+      }
+
+      break;
+
+    case VICTORY:
+
+      if (*KEY_ptr == 0b0111 && edge_capture) {  // primeiro botão da placa, tecla pressionada
+        state_game = START;
+        previous_state = VICTORY;
+      } else if (*KEY_ptr == 0b1111) {
+        state_game = VICTORY;
+        previous_state = VICTORY;
+      }
+
       break;
 
       // case RESTART:
@@ -184,7 +224,7 @@ void *mouse_thread() {
   struct input_event ev_mouse;
 
   // cursor.ativo = 1;
-  cursor.data_register = 30;
+  cursor.data_register = 31;
   cursor.offset = 1;
   cursor.coord_x = 320;
   cursor.coord_y = 450;
@@ -219,6 +259,7 @@ void *mouse_thread() {
       } else if (ev_mouse.type == EV_KEY && ev_mouse.code == BTN_RIGHT) {
         cursor.coord_y += 10;
       }
+      printf("\n%d\n", cursor.coord_x);
       printf("%d\n", cursor.coord_y);
 
       // pthread_mutex_lock(&mutex);
@@ -434,28 +475,124 @@ void *visul_thread() {
   u16_t first_waterway = 60;  // Coodinate y -> número para a coordenada da primeira pista na água
 
   // coord_x, coord_y, direction, offset, data_register, step_x, step_y, speed, ativo, collision
-  sprite_t tree_back_1 = {end, first_waterway, 0, 10, 16, 1, 1, 8, 1, 0};
-  sprite_t tree_middle_1 = {end + 20, first_waterway, 0, 9, 17, 1, 1, 8, 1, 0};
-  sprite_t tree_front_1 = {end + 40, first_waterway, 0, 8, 18, 1, 1, 8, 1, 0};
+  tree_back_1.coord_x = end;
+  tree_back_1.coord_y = first_waterway;
+  tree_back_1.direction = 0;
+  tree_back_1.offset = 10;
+  tree_back_1.data_register = 16;
+  tree_back_1.step_x = 1;
+  tree_back_1.step_y = 1;
+  tree_back_1.speed = 8;
+  tree_back_1.ativo = 1;
+  tree_back_1.collision = 0;
+
+  tree_middle_1.coord_x = end + 20;
+  tree_middle_1.coord_y = first_waterway;
+  tree_middle_1.direction = 0;
+  tree_middle_1.offset = 9;
+  tree_middle_1.data_register = 17;
+  tree_middle_1.step_x = 1;
+  tree_middle_1.step_y = 1;
+  tree_middle_1.speed = 8;
+  tree_middle_1.ativo = 1;
+  tree_middle_1.collision = 0;
+
+  tree_front_1.coord_x = end + 40;
+  tree_front_1.coord_y = first_waterway;
+  tree_front_1.direction = 0;
+  tree_front_1.offset = 8;
+  tree_front_1.data_register = 18;
+  tree_front_1.step_x = 1;
+  tree_front_1.step_y = 1;
+  tree_front_1.speed = 8;
+  tree_front_1.ativo = 1;
+  tree_front_1.collision = 0;
 
   /* SECOND WATER WAY (LILYPAD, RIGHT DIRECTION) */
   u16_t second_waterway = first_waterway + 40;  // Coodinate y -> número para a coordenada da segunda pista na água
 
-  sprite_t lilypad_1_1 = {beginning, second_waterway, 1, 4, 19, 1, 1, 6, 1, 0};
-  sprite_t lilypad_1_2 = {beginning + 100, second_waterway, 1, 5, 20, 1, 1, 6, 1, 0};
+  lilypad_1_1.coord_x = beginning;
+  lilypad_1_1.coord_y = second_waterway;
+  lilypad_1_1.direction = 1;
+  lilypad_1_1.offset = 4;
+  lilypad_1_1.data_register = 19;
+  lilypad_1_1.step_x = 1;
+  lilypad_1_1.step_y = 1;
+  lilypad_1_1.speed = 6;
+  lilypad_1_1.ativo = 1;
+  lilypad_1_1.collision = 0;
+
+  lilypad_1_2.coord_x = beginning + 100;
+  lilypad_1_2.coord_y = second_waterway;
+  lilypad_1_2.direction = 1;
+  lilypad_1_2.offset = 5;
+  lilypad_1_2.data_register = 20;
+  lilypad_1_2.step_x = 1;
+  lilypad_1_2.step_y = 1;
+  lilypad_1_2.speed = 6;
+  lilypad_1_2.ativo = 1;
+  lilypad_1_2.collision = 0;
 
   /* THIRD WATER WAY (TRUNK TREE, LEFT DIRECTION) */
   u16_t third_waterway = second_waterway + 40;  // Coodinate y -> número para a coordenada da terceira pista na água
 
-  sprite_t tree_back_2 = {end, third_waterway, 0, 10, 21, 1, 1, 10, 1, 0};
-  sprite_t tree_middle_2 = {end + 20, third_waterway, 0, 9, 22, 1, 1, 10, 1, 0};
-  sprite_t tree_front_2 = {end + 40, third_waterway, 0, 8, 23, 1, 1, 10, 1, 0};
+  tree_back_2.coord_x = end;
+  tree_back_2.coord_y = third_waterway;
+  tree_back_2.direction = 0;
+  tree_back_2.offset = 10;
+  tree_back_2.data_register = 21;
+  tree_back_2.step_x = 1;
+  tree_back_2.step_y = 1;
+  tree_back_2.speed = 10;
+  tree_back_2.ativo = 1;
+  tree_back_2.collision = 0;
+
+  tree_middle_2.coord_x = end + 20;
+  tree_middle_2.coord_y = third_waterway;
+  tree_middle_2.direction = 0;
+  tree_middle_2.offset = 9;
+  tree_middle_2.data_register = 22;
+  tree_middle_2.step_x = 1;
+  tree_middle_2.step_y = 1;
+  tree_middle_2.speed = 10;
+  tree_middle_2.ativo = 1;
+  tree_middle_2.collision = 0;
+
+  tree_front_2.coord_x = end + 40;
+  tree_front_2.coord_y = third_waterway;
+  tree_front_2.direction = 0;
+  tree_front_2.offset = 8;
+  tree_front_2.data_register = 23;
+  tree_front_2.step_x = 1;
+  tree_front_2.step_y = 1;
+  tree_front_2.speed = 10;
+  tree_front_2.ativo = 1;
+  tree_front_2.collision = 0;
 
   /* FOURTH WATER WAY (LILYPAD, RIGHT DIRECTION) */
   u16_t fourth_waterway = third_waterway + 40;  // Coodinate y -> número para a coordenada da quarta pista na água
 
-  sprite_t lilypad_2_1 = {beginning, fourth_waterway, 1, 4, 24, 1, 1, 9, 1, 0};
-  sprite_t lilypad_2_2 = {beginning + 100, fourth_waterway, 1, 5, 25, 1, 1, 9, 1, 0};
+  lilypad_2_1.coord_x = beginning;
+  lilypad_2_1.coord_y = fourth_waterway;
+  lilypad_2_1.direction = 1;
+  lilypad_2_1.offset = 4;
+  lilypad_2_1.data_register = 24;
+  lilypad_2_1.step_x = 1;
+  lilypad_2_1.step_y = 1;
+  lilypad_2_1.speed = 9;
+  lilypad_2_1.ativo = 1;
+  lilypad_2_1.collision = 0;
+
+  lilypad_2_2.coord_x = beginning + 100;
+  lilypad_2_2.coord_y = fourth_waterway;
+  lilypad_2_2.direction = 1;
+  lilypad_2_2.offset = 5;
+  lilypad_2_2.data_register = 25;
+  lilypad_2_2.step_x = 1;
+  lilypad_2_2.step_y = 1;
+  lilypad_2_2.speed = 9;
+  lilypad_2_2.ativo = 1;
+  lilypad_2_2.collision = 0;
 
   while (1) {
     /*---------- ROAD CONDITIONS ----------*/
@@ -718,9 +855,138 @@ void *collision_thread() {
     collision(&cursor, &car_4_1);
     collision(&cursor, &car_4_2);
     collision(&cursor, &car_4_3);
+
+    collision(&cursor, &tree_back_1);
+    collision(&cursor, &tree_middle_1);
+    collision(&cursor, &tree_front_1);
+
+    collision(&cursor, &tree_back_2);
+    collision(&cursor, &tree_middle_2);
+    collision(&cursor, &tree_front_2);
+
+    collision(&cursor, &lilypad_1_1);
+    collision(&cursor, &lilypad_1_2);
+    collision(&cursor, &lilypad_2_1);
+    collision(&cursor, &lilypad_2_2);
   }
 
   pthread_exit(NULL);
+}
+
+u8_t num_to_bin(i8_t num);
+
+u8_t num_to_bin(i8_t num) {
+  switch (num) {
+    case 1:
+      return 0b1111001;
+      break;
+    case 2:
+      return 0b0100100;
+      break;
+    case 3:
+      return 0b0110000;
+      break;
+    case 4:
+      return 0b0011001;
+      break;
+    case 5:
+      return 0b0010010;
+      break;
+    default:
+      break;
+  }
+}
+
+void *display_thread() {
+  static u64_t fd_map = -1;
+
+  fd_map = open("/dev/mem", (O_RDWR | O_SYNC));
+  if (fd_map == -1) {
+    perror("Error mapping memory");
+    exit(EXIT_FAILURE);
+  }
+
+  void *LW_virtual = mmap(NULL, LW_BRIDGE_SPAN, (PROT_READ | PROT_WRITE), MAP_SHARED, fd_map, LW_BRIDGE_BASE);
+  if (LW_virtual == MAP_FAILED) {
+    perror("Error mapping memory");
+    exit(EXIT_FAILURE);
+  }
+
+  display_t display;
+  display.HEX0_ptr = (u64_t *)(LW_virtual + HEX0_BASE);
+  display.HEX1_ptr = (u64_t *)(LW_virtual + HEX1_BASE);
+  display.HEX2_ptr = (u64_t *)(LW_virtual + HEX2_BASE);
+  display.HEX3_ptr = (u64_t *)(LW_virtual + HEX3_BASE);
+  display.HEX4_ptr = (u64_t *)(LW_virtual + HEX4_BASE);
+  display.HEX5_ptr = (u64_t *)(LW_virtual + HEX5_BASE);
+
+  u64_t *digits[] = {display.HEX0_ptr, display.HEX1_ptr, display.HEX2_ptr,
+                     display.HEX3_ptr, display.HEX4_ptr, display.HEX5_ptr};
+
+  const char *message = "5 frogs left";
+  int message_len = strlen(message);
+
+  i8_t i = 0;
+  while (1) {
+    switch (state_game) {
+      case START:
+        // Exibir padrão inicial
+        *(display.HEX0_ptr) = 0b1111111;
+        *(display.HEX1_ptr) = 0b1111111;
+        *(display.HEX2_ptr) = 0b1111111;
+        *(display.HEX3_ptr) = 0b1111111;
+        *(display.HEX4_ptr) = 0b1111111;
+        *(display.HEX5_ptr) = 0b1111111;
+        break;
+
+      case GAME:
+        if (i % 2 == 0) {
+          *(display.HEX0_ptr) = 0b0010010;
+          *(display.HEX1_ptr) = 0b0010000;
+          *(display.HEX2_ptr) = 0b1000000;
+          *(display.HEX3_ptr) = 0b1001110;
+          *(display.HEX4_ptr) = 0b0001110;
+          *(display.HEX5_ptr) = num_to_bin(frogs);
+        } else {
+          *(display.HEX0_ptr) = 0b0010010;
+          *(display.HEX1_ptr) = 0b0000110;
+          *(display.HEX2_ptr) = 0b1000001;
+          *(display.HEX3_ptr) = 0b1111001;
+          *(display.HEX4_ptr) = 0b1000111;
+          *(display.HEX5_ptr) = num_to_bin(life);
+        }
+        sleep(2);
+        i += 1;
+
+        break;
+
+      case PAUSE:
+        *(display.HEX0_ptr) = 0b1111111;
+        *(display.HEX1_ptr) = 0b1111111;
+        *(display.HEX2_ptr) = 0b1111111;
+        *(display.HEX3_ptr) = 0b1111111;
+        *(display.HEX4_ptr) = 0b1111111;
+        *(display.HEX5_ptr) = 0b1111111;
+        // Lógica para PAUSE pode ser implementada aqui
+        break;
+
+      case RESTART:
+        // Lógica para RESTART pode ser implementada aqui
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  if (munmap(LW_virtual, LW_BRIDGE_SPAN) == -1) {
+    perror("Error unmapping memory");
+    exit(EXIT_FAILURE);
+  }
+  if (close(fd_map) == -1) {
+    perror("Error closing device");
+    exit(EXIT_FAILURE);
+  }
 }
 
 int main(void) {
@@ -734,10 +1000,14 @@ int main(void) {
 
   previous_state = GAME;
 
+  life = 5;
+  frogs = 5;
+
   pthread_t thread_key_id;
   pthread_t thread_mouse_id;
   pthread_t thread_visu_id;
   pthread_t thread_coll_id;
+  pthread_t thread_display_id;
 
   if (pthread_create(&thread_key_id, NULL, key_thread, NULL) != 0) {
     perror("Error creating thread");
@@ -759,6 +1029,11 @@ int main(void) {
     return 1;
   }
 
+  if (pthread_create(&thread_display_id, NULL, display_thread, NULL) != 0) {
+    perror("Error creating thread");
+    return 1;
+  }
+
   pthread_mutex_lock(&mutex);
   clean_sprite();
   clean_polygon();
@@ -767,7 +1042,6 @@ int main(void) {
   pthread_mutex_unlock(&mutex);
 
   counter_state = 0;
-  // game_level = 0;
   u16_t counter_river = 0;
 
   while (1) {
@@ -835,8 +1109,46 @@ int main(void) {
           cursor.coord_y = 450;
         }
 
-        if (frogs == 0) {
+        if (frogs == 4) {
+          sprite_fixed_t frog_one;
+          frog_one.ativo = 1;
+          frog_one.data_register = 26;
+          frog_one.offset = 0;
+          frog_one.coord_x = 100;
+          frog_one.coord_y = 15;
+          set_fixed_sprite(frog_one);
+
+        } else if (frogs == 3) {
+          sprite_fixed_t frog_two;
+          frog_two.ativo = 1;
+          frog_two.data_register = 27;
+          frog_two.offset = 0;
+          frog_two.coord_x = 200;
+          frog_two.coord_y = 15;
+          set_fixed_sprite(frog_two);
+
+        } else if (frogs == 2) {
+          sprite_fixed_t frog_three;
+          frog_three.ativo = 1;
+          frog_three.data_register = 28;
+          frog_three.offset = 0;
+          frog_three.coord_x = 300;
+          frog_three.coord_y = 15;
+          set_fixed_sprite(frog_three);
+
+        } else if (frogs == 1) {
+          sprite_fixed_t frog_four;
+          frog_four.ativo = 1;
+          frog_four.data_register = 29;
+          frog_four.offset = 0;
+          frog_four.coord_x = 400;
+          frog_four.coord_y = 15;
+          set_fixed_sprite(frog_four);
+
+        } else if (frogs == 0) {
           state_game = VICTORY;
+          cursor.coord_x = 320;
+          cursor.coord_y = 450;
         }
 
         /*Verifica a colisão*/
@@ -849,11 +1161,6 @@ int main(void) {
         } else {
           state_game = GAMEOVER;  // Lembrar de ir para restart
         }
-        // if (cursor.collision == 1) {
-        //   life -= 1;
-        // } else if (cursor.collision == 1 && life <= 0) {
-        //   state_game = GAMEOVER;
-        // }
 
         pthread_mutex_lock(&mutex);
         set_dynamic_sprite(cursor);
@@ -885,27 +1192,39 @@ int main(void) {
 
         break;
       case GAMEOVER:
+
+        pthread_mutex_lock(&mutex);
+        clean_sprite();
+        pthread_mutex_unlock(&mutex);
+
+        pthread_mutex_lock(&mutex);
+        clean_polygon();
+        pthread_mutex_unlock(&mutex);
+
         pthread_mutex_lock(&mutex);
         gameover_screen();
         pthread_mutex_unlock(&mutex);
-        sleep(5);
 
-        counter_state = 0;
-        // cursor.coord_x = 320;
-        // cursor.coord_y = 450;
-        state_game = START;
+        life = 5;
+        frogs = 5;
 
         break;
       case VICTORY:
+
+        pthread_mutex_lock(&mutex);
+        clean_sprite();
+        pthread_mutex_unlock(&mutex);
+
+        pthread_mutex_lock(&mutex);
+        clean_polygon();
+        pthread_mutex_unlock(&mutex);
+
         pthread_mutex_lock(&mutex);
         victory_screen();
         pthread_mutex_unlock(&mutex);
-        sleep(5);
 
-        counter_state = 0;
-        cursor.coord_x = 320;
-        cursor.coord_y = 450;
-        state_game = START;
+        life = 5;
+        frogs = 5;
 
         break;
       default:
