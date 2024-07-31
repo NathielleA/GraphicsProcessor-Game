@@ -63,4 +63,10 @@ Neste trabalho, dentro da FPGA da placa DE1-SoC, está implementada uma Unidade 
 
 A GPU implementada na FPGA utiliza uma estrutura de Pipeline para a renderização de gráficos, o que otimiza o desempenho ao dividir o processamento em etapas sequenciais. Isso é especialmente útil ao desenhar polígonos convexos, como quadrados e triângulos, que são fundamentais para muitos elementos gráficos em jogos. A modelagem e simulação dos módulos do Co-Processador gráfico foram fundamentais para validar essa abordagem, garantindo que os elementos gráficos possam ser manipulados de forma rápida e com precisão.
 
+A integração da GPU com o processador de propósito geral HPS da placa foi crucial para o funcionamento harmonioso do sistema. A comunicação entre o HPS e a GPU foi implementada através de um módulo de kernel desenvolvido anteriormente, especificamente para esse propósito. Esse módulo atua como um driver de caractere, proporcionando funções de leitura e escrita nos barramentos Data A e Data B. Esses barramentos são responsáveis por receber informações da fila e transmiti-las para a GPU, onde as instruções são executadas. A construção desse módulo de kernel foi essencial para facilitar o acesso à GPU.
+
+A utilização do sistema operacional Linux embarcado na placa, juntamente com a linguagem C, proporcionou o desenvolvimento não apenas do módulo de kernel, mas também de uma biblioteca com funções específicas para a escrita na GPU. Essa biblioteca foi projetada para facilitar o uso da GPU pelos programadores, abstraindo a complexidade das operações de baixo nível e permitindo uma interface mais amigável para o desenvolvimento de aplicações gráficas. Esse conjunto de ferramentas e bibliotecas simplificou significativamente o processo de desenvolvimento do jogo descrito neste documento, permitindo uma implementação mais rápida e eficiente dos elementos gráficos e das funcionalidades do jogo.
+
+- ### Periféricos Utilizados
+
 
