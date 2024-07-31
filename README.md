@@ -140,4 +140,13 @@ Em suma, a implementação de threads no desenvolvimento do jogo permitiu a exec
 
 ## Etapas da Implementação do Jogo
 
+### Conexão com os periféricos (botões, display e mouse)
 
+*precisa o mouse?
+
+### Implementação das Threads
+### Lógica das Mudanças de Telas
+### Funções para movimentação das Sprites
+### Lógica de Colisão
+### Lógica do Jogo e Pontuação
+### Novas Sprites e Visualização do Jogo
