@@ -93,7 +93,7 @@ IMAGEM DO PERIFÉRICO AQUI
 
 - ### Uso do Mouse
 
-
+Com relação ao uso do mouse, foi utilizadas as funçãos da biblioteca do Linux `input.h`, para abrir e fechar o arquivo do driver do mouse e realizar a leitura dos movimentos.
 
 - ### Software e Ferramentas
 
