@@ -1,6 +1,6 @@
 from PIL import Image
 
-spritePixels = Image.open("docs/frog.png")
+spritePixels = Image.open("docs\car-yellow.png")
 
 matrizRGB = []
 rgb = []
