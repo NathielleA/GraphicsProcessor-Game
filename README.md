@@ -59,4 +59,8 @@ A integração do HPS com o FPGA permite uma comunicação entre os dois, atrav�
 
 - ### Processador Gráfico
 
+Neste trabalho, dentro da FPGA da placa DE1-SoC, está implementada uma Unidade de Processamento Gráfico (GPU) especialmente projetada para jogos bidimensionais. Essa GPU é baseada em sprites, que são elementos gráficos que podem ser movidos e controlados de forma independente na tela. A arquitetura da GPU foi desenvolvida para trabalhar com uma resolução de 640x480 pixels em um monitor VGA, permitindo a criação de jogos com gráficos claros e definidos.
+
+A GPU implementada na FPGA utiliza uma estrutura de Pipeline para a renderização de gráficos, o que otimiza o desempenho ao dividir o processamento em etapas sequenciais. Isso é especialmente útil ao desenhar polígonos convexos, como quadrados e triângulos, que são fundamentais para muitos elementos gráficos em jogos. A modelagem e simulação dos módulos do Co-Processador gráfico foram fundamentais para validar essa abordagem, garantindo que os elementos gráficos possam ser manipulados de forma rápida e com precisão.
+
 
