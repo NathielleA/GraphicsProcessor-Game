@@ -153,4 +153,26 @@ Em suma, a implementação de threads no desenvolvimento do jogo permitiu a exec
 
 Em seguimento, com o objetivo de trazer uma visualização adequada ao tema e objetivos do jogo, foram implememntadas novas Sprites na Memória de Sprites presentes na GPU. Essa memória do processador gráfico possui um endereçamento por pixel, onde cada Sprite possui 400 pixels e é possível armazenar 32 Sprites ao todo. Para formar uma nova, é preciso enviar à GPU o local do pixel na memória e o seu valor em RGB, mudando a cor do respectivo pixel.
 
+O jogo, Croak Rush, possui 11 novas sprites implementadas que são utiizadas, que são as apresentadas na figura a baixo.
+
+<div align="center">
+   <img width="330px" src="img\game-sprites.jpeg" />
+    <p> Figura x. Novas Sprites implementadas para o jogo.</p>
+</div>
+
+Foram seguidas algumas etapas para elaboração das novas Sprites. Foi necessário realizar a conversão de imagem para uma matriz com os valores RGB de cada pixel. Para realizar essa conversão, foi utilizado um código em Python com a biblioteca Pillow (Python Imaging Library, ou PIL), que facilita a manipulação e o processamento de imagens. 
+
+No caso de um sprite, a imagem é processada pixel a pixel para criar uma matriz que representa seus valores de cor. O procedimento é o seguinte:
+
+1) **Desenho do Pixel Art 20x20:** Utilizando o software para desenho por pixel foram desenhadas as novas sprites.
+
+2) **Leitura da Imagem:** A imagem do sprite é carregada utilizando a biblioteca Pillow. Cada pixel da imagem é lido e convertido para valores RGB.
+
+3) **Normalização dos Valores:** Cada valor RGB (que varia de 0 a 255) é dividido por 32 para obter um valor entre 0 e 8. Isso reduz a quantidade de dados a serem manipulados e se adapta ao espaço de memória disponível na GPU da FPGA.
+
+4) **Criação da Matriz:** Uma matriz de dimensões 400x3 é criada, onde cada linha da matriz representa os valores normalizados RGB de um pixel da imagem.
+
+5) **Armazenamento na Memória de Sprites:** Os valores RGB normalizados são salvos na memória de sprites, correspondendo a cada um dos 400 pixels que compõem o sprite. Um loop percorre cada pixel da imagem para realizar essa conversão e armazenamento. 
+
+Esso processo é ilustrado no diagrama presente na Figura x.
 
