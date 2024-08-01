@@ -180,3 +180,21 @@ Esso processo é ilustrado no diagrama presente na Figura x.
    <img width="400px" src="img\diagram-sprites.png" />
     <p> Figura x. Processo de conversão da Sprite para Matriz RGB.</p>
 </div>
+
+Agora, com relação às telas do jogo, foi seguido uma lógica semelhantes à das Sprites. Porém, além da matriz possuir um tamanho maior, sendo 4800x3, o valor das cores em RGB não eram por pixel, e sim, por blocos de background.
+
+O jogo possui as seguintes telas:
+
+<div align="center">
+   <img width="400px" src="" />
+    <p> Figura x. Telas do Jogo.</p>
+</div>
+
+Para a conversão da tela inteira utilizando o conceito de background block, o processo é similar ao das Sprites, mas adaptado para uma imagem maior e possui uma processo diferente na fase de desenho da imagem:
+
+1) **Redimensionamento e pixelização de uma Imagem:**Para que não houvesse a necessidade de realizar um desenho 
+
+Leitura da Imagem: A imagem de fundo é carregada usando a biblioteca Pillow, e cada pixel é convertido para valores RGB.
+Normalização dos Valores: Assim como no caso do sprite, cada valor RGB é dividido por 32 para obter valores entre 0 e 8.
+Criação da Matriz: Uma matriz de dimensões 4800x3 é montada, representando os valores normalizados de cada pixel da imagem de fundo.
+Armazenamento em Blocos de Background: Os valores RGB normalizados são organizados em blocos de background e armazenados nos endereços correspondentes na memória de vídeo. Um loop percorre cada pixel da imagem para realizar essa conversão e armazenamento, garantindo que a tela inteira seja representada corretamente na matriz.
