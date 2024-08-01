@@ -14,3 +14,4 @@ src/kernel/gpp_data_bus.o
 src/kernel/modules.order
 src/utils/aux.h
 src/utils/aux.c
+/docs

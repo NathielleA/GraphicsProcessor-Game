@@ -388,3 +388,44 @@ Esse processo é ilustrado no diagrama presente na Figura x.
 </div>
 
 Esse processo de conversão é fundamental para preparar os dados gráficos para serem manipulados e exibidos pela GPU na FPGA, garantindo uma renderização eficiente e precisa dos elementos gráficos no jogo.
+
+
+<div align="center">
+   <img width="400px" src="img\gif-init.gif" />
+    <p> Figura x. Iniciando o Jogo.</p>
+</div>
+
+<div align="center">
+   <img width="400px" src="img\crossing.gif" />
+    <p> Figura x. Atravessando as ruas.</p>
+</div>
+
+<div align="center">
+   <img width="400px" src="img\pause.gif" />
+    <p> Figura x. Pausando.</p>
+</div>
+
+<div align="center">
+   <img width="400px" src="img\car-collision.gif" />
+    <p> Figura x. Colidindo com um carro.</p>
+</div>
+
+<div align="center">
+   <img width="400px" src="img\one-turn-win.gif" />
+    <p> Figura x. Atravessando um sapo.</p>
+</div>
+
+<div align="center">
+   <img width="400px" src="img\water-collision.gif" />
+    <p> Figura x. Colidindo com um elemento no rio.</p>
+</div>
+
+<div align="center">
+   <img width="" src="" />
+    <p> Figura x. Colidindo, perdendo as vidas e tela de Game Over.</p>
+</div>
+
+<div align="center">
+   <img width="400px" src="img\win.gif" />
+    <p> Figura x. Vencendo.</p>
+</div>
