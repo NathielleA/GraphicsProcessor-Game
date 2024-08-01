@@ -166,6 +166,10 @@ No loop contínuo da thread, o estado dos botões é lido e comparado com o esta
 
 Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha o descritor de arquivo associado a `/dev/mem com` `close()`, garantindo que os recursos sejam liberados adequadamente. A thread termina sua execução com `pthread_exit()`.
 
+img {
+  mix-blend-mode: multiply;
+}
+
 <div align="center">
    <img width=" " src="img\Fluxograma_thread_button.png" />
     <p> Figura x. Fluxograma da thread que gerencia os botões.</p>
