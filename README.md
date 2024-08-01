@@ -70,7 +70,7 @@ A utilização do sistema operacional Linux embarcado na placa, juntamente com a
 
 <div align="center">
    <img width="" src="img\perifericos-placa.jpeg" />
-    <p> Figura x. Quais periféricos do kit de desenvolvimento foram utilizados.</p>
+    <p> Figura 1. Quais periféricos do kit de desenvolvimento foram utilizados.</p>
 </div>
 
 Para o desenvolvimento do jogo na plataforma DE1-SoC, diferentes periféricos e componentes da placa foram utilizados para proporcionar uma experiência interativa e cumprir os requisitos estabelecidos. A seguir, é descrito como cada um desses periféricos foi integrado e utilizado no projeto:
@@ -80,7 +80,7 @@ A entrada VGA da placa DE1-SoC foi utilizada para a conexão com um monitor exte
 
 <div align="center">
    <img width="" src="img\vga.jpeg" />
-    <p> Figura x. Uso do periférico de entrada VGA.</p>
+    <p> Figura 2. Uso do periférico de entrada VGA.</p>
 </div>
 
 #### Entrada USB
@@ -88,7 +88,7 @@ A entrada USB foi empregada para conectar um mouse à placa, que serve como disp
 
 <div align="center">
    <img width="" src="img\mouse.jpeg" />
-    <p> Figura x. Uso do periférico de entrada USB para o mouse.</p>
+    <p> Figura 3. Uso do periférico de entrada USB para o mouse.</p>
 </div>
 
 #### Botões
@@ -96,7 +96,7 @@ Os botões disponíveis na placa DE1-SoC foram configurados para funções espec
 
 <div align="center">
    <img width="" src="img\buttons.jpeg" />
-    <p> Figura x. Uso dos botões.</p>
+    <p> Figura 4. Uso dos botões.</p>
 </div>
 
 #### Display de 7 Segmentos
@@ -104,7 +104,7 @@ O display de 7 segmentos na placa foi utilizado para exibir informações críti
 
 <div align="center">
    <img width="" src="img\display.jpeg" />
-    <p> Figura x. Uso do display de 7 segmentos.</p>
+    <p> Figura 5. Uso do display de 7 segmentos.</p>
 </div>
 
 - ### Uso do Mouse
@@ -124,7 +124,7 @@ Uma thread é a menor unidade de processamento que pode ser realizada em um sist
 
 <div align="center">
    <img width="" src="img\threads.png" />
-    <p> Figura x. Diagrama funcionamento de Threads (Fonte: https://medium.com).</p>
+    <p> Figura 6. Diagrama funcionamento de Threads (Fonte: https://medium.com).</p>
 </div>
 
 #### Funcionamento de Threads
@@ -171,7 +171,7 @@ Após o mapeamento, a função `munmap()` é usada para desmapear a memória, li
 
 <div align="center">
    <img width="" src="img\Mapeamento.png" />
-    <p> Figura x. Sequência de etapas para iniciar e finalizar o mapeamento de memória.</p>
+    <p> Figura 7. Sequência de etapas para iniciar e finalizar o mapeamento de memória.</p>
 </div>
 
 Embora o mesmo método possa ser empregado para o acesso ao mouse, optou-se por utilizar a biblioteca `input.h`, que abstrai a complexidade do mapeamento direto da memória, oferecendo uma interface mais simplificada e eliminando a necessidade de processamento manual das informações obtidas.
@@ -189,7 +189,7 @@ Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha
 
 <div align="center">
    <img width=" " src="img\Fluxograma_thread_button.png" />
-    <p> Figura x. Fluxograma da thread que gerencia os botões.</p>
+    <p> Figura 8. Fluxograma da thread que gerencia os botões.</p>
 </div>
 
 #### Thread para Gerenciamento do Display
@@ -197,7 +197,7 @@ Após a configuração inicial do mapeamento de memória, a thread display_threa
 
 <div align="center">
    <img width=" " src="img\Fluxograma_thread_display.png" />
-    <p> Figura x. Fluxograma da thread que gerencia o display.</p>
+    <p> Figura 9. Fluxograma da thread que gerencia o display.</p>
 </div>
 
 No loop principal, a thread atualiza o display com base no estado atual do jogo, representado pela variável global state_game. Dependendo do estado:
@@ -219,7 +219,7 @@ Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`)
 
 <div align="center">
    <img width=" " src="img\Fluxograma_thread_mouse.png" />
-    <p> Figura x. Fluxograma da thread que gerencia o mouse.</p>
+    <p> Figura 10. Fluxograma da thread que gerencia o mouse.</p>
 </div>
 
 #### Thread para Gerenciamento da Visualização dos Sprites
@@ -281,19 +281,19 @@ O funcionamento da função é o seguinte: primeiro, verifica se o contador é m
 
 <div align="center">
    <img width=" " src="img\mov1.png" />
-    <p> Figura x. Exemplo de movimentação de uma sprite que tem velocidade 1.</p>
+    <p> Figura 11. Exemplo de movimentação de uma sprite que tem velocidade 1.</p>
 </div>
 
 <div align="center">
    <img width=" " src="img\mov2.png" />
-    <p> Figura x. Exemplo de movimentação de uma sprite que tem velocidade 2.</p>
+    <p> Figura 12. Exemplo de movimentação de uma sprite que tem velocidade 2.</p>
 </div>
 
 Após atualizar a coordenada x, a função retorna 0, sinalizando que a operação de movimentação foi concluída com sucesso. Em resumo, a função garante que o sprite se mova de forma controlada e fluida, conforme definido pela sua velocidade e direção.
 
 <div align="center">
    <img width=" " src="img\fluxograma_coordinate.png" />
-    <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
+    <p> Figura 13. Fluxograma da função que realiza o deslocamento das sprites.</p>
 </div>
 
 ### Lógica de Colisão
@@ -306,7 +306,7 @@ Se todas essas condições forem verdadeiras, significa que os retângulos se so
 
 <div align="center">
    <img width=" " src="img\fluxograma_collision.png" />
-    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+    <p> Figura 14. Fluxograma da função que verifica colisão entre sprites.</p>
 </div>
 
 ### Lógica do Jogo e Pontuação
@@ -329,7 +329,7 @@ O jogo, Croak Rush, possui 11 novas sprites implementadas que são utiizadas, qu
 
 <div align="center">
    <img width="300px" src="img\game-sprites.jpeg" />
-    <p> Figura x. Novas Sprites implementadas para o jogo.</p>
+    <p> Figura 15. Novas Sprites implementadas para o jogo.</p>
 </div>
 
 Foram seguidas algumas etapas para elaboração das novas Sprites. Foi necessário realizar a conversão de imagem para uma matriz com os valores RGB de cada pixel. Para realizar essa conversão, foi utilizado um código em Python com a biblioteca Pillow (Python Imaging Library, ou PIL), que facilita a manipulação e o processamento de imagens. 
@@ -350,7 +350,7 @@ Esse processo é ilustrado no diagrama presente na Figura x.
 
 <div align="center">
    <img width="500px" src="img\diagram-sprites.jpeg" />
-    <p> Figura x. Processo de conversão da Sprite para Matriz RGB 400x3.</p>
+    <p> Figura 16. Processo de conversão da Sprite para Matriz RGB 400x3.</p>
 </div>
 
 Agora, com relação às telas do jogo, foi seguido uma lógica semelhantes à das Sprites. Porém, além da matriz possuir um tamanho maior, sendo 4800x3, o valor das cores em RGB não eram por pixel, e sim, por blocos de background.
@@ -359,7 +359,7 @@ O jogo possui as seguintes telas:
 
 <div align="center">
    <img width="500px" src="img\screens.jpeg" />
-    <p> Figura x. Telas do Jogo.</p>
+    <p> Figura 17. Telas do Jogo.</p>
 </div>
 
 Para a conversão da tela inteira utilizando o conceito de background block, o processo é similar ao das Sprites, mas adaptado para uma imagem maior e possui uma processo diferente na fase de desenho da imagem:
@@ -378,7 +378,7 @@ Esse processo é ilustrado no diagrama presente na Figura x.
 
 <div align="center">
    <img width="500px" src="img\diagram-screens.jpeg" />
-    <p> Figura x. Processo de conversão de uma Imagem em uma Matriz RGB 4800x3.</p>
+    <p> Figura 18. Processo de conversão de uma Imagem em uma Matriz RGB 4800x3.</p>
 </div>
 
 Esse processo de conversão é fundamental para preparar os dados gráficos para serem manipulados e exibidos pela GPU na FPGA, garantindo uma renderização eficiente e precisa dos elementos gráficos no jogo.
@@ -387,42 +387,42 @@ Esse processo de conversão é fundamental para preparar os dados gráficos para
 
 <div align="center">
    <img width="400px" src="img\gif-init.gif" />
-    <p> Figura x. Iniciando o Jogo.</p>
+    <p> Figura 19. Iniciando o Jogo.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\crossing.gif" />
-    <p> Figura x. Atravessando as ruas.</p>
+    <p> Figura 20. Atravessando as ruas.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\pause.gif" />
-    <p> Figura x. Pausando.</p>
+    <p> Figura 21. Pausando.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\car-collision.gif" />
-    <p> Figura x. Colidindo com um carro.</p>
+    <p> Figura 22. Colidindo com um carro.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\one-turn-win.gif" />
-    <p> Figura x. Atravessando um sapo.</p>
+    <p> Figura 23. Atravessando um sapo.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\water-collision.gif" />
-    <p> Figura x. Colidindo com um elemento no rio.</p>
+    <p> Figura 24. Colidindo com um elemento no rio.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\game-over.gif" />
-    <p> Figura x. Colidindo, perdendo as vidas e tela de Game Over.</p>
+    <p> Figura 25. Colidindo, perdendo as vidas e tela de Game Over.</p>
 </div>
 
 <div align="center">
    <img width="400px" src="img\win.gif" />
-    <p> Figura x. Vencendo.</p>
+    <p> Figura 26. Vencendo.</p>
 </div>
 
 ## Conclusão
