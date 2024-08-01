@@ -259,8 +259,6 @@ void *mouse_thread() {
       } else if (ev_mouse.type == EV_KEY && ev_mouse.code == BTN_RIGHT) {
         cursor.coord_y += 10;
       }
-      printf("\n%d\n", cursor.coord_x);
-      printf("%d\n", cursor.coord_y);
 
       // pthread_mutex_lock(&mutex);
       // set_dynamic_sprite(cursor);
@@ -1119,6 +1117,14 @@ int main(void) {
           set_fixed_sprite(frog_one);
 
         } else if (frogs == 3) {
+          sprite_fixed_t frog_one;
+          frog_one.ativo = 1;
+          frog_one.data_register = 26;
+          frog_one.offset = 0;
+          frog_one.coord_x = 100;
+          frog_one.coord_y = 15;
+          set_fixed_sprite(frog_one);
+
           sprite_fixed_t frog_two;
           frog_two.ativo = 1;
           frog_two.data_register = 27;
@@ -1128,6 +1134,22 @@ int main(void) {
           set_fixed_sprite(frog_two);
 
         } else if (frogs == 2) {
+          sprite_fixed_t frog_one;
+          frog_one.ativo = 1;
+          frog_one.data_register = 26;
+          frog_one.offset = 0;
+          frog_one.coord_x = 100;
+          frog_one.coord_y = 15;
+          set_fixed_sprite(frog_one);
+
+          sprite_fixed_t frog_two;
+          frog_two.ativo = 1;
+          frog_two.data_register = 27;
+          frog_two.offset = 0;
+          frog_two.coord_x = 200;
+          frog_two.coord_y = 15;
+          set_fixed_sprite(frog_two);
+
           sprite_fixed_t frog_three;
           frog_three.ativo = 1;
           frog_three.data_register = 28;
@@ -1137,6 +1159,30 @@ int main(void) {
           set_fixed_sprite(frog_three);
 
         } else if (frogs == 1) {
+          sprite_fixed_t frog_one;
+          frog_one.ativo = 1;
+          frog_one.data_register = 26;
+          frog_one.offset = 0;
+          frog_one.coord_x = 100;
+          frog_one.coord_y = 15;
+          set_fixed_sprite(frog_one);
+
+          sprite_fixed_t frog_two;
+          frog_two.ativo = 1;
+          frog_two.data_register = 27;
+          frog_two.offset = 0;
+          frog_two.coord_x = 200;
+          frog_two.coord_y = 15;
+          set_fixed_sprite(frog_two);
+
+          sprite_fixed_t frog_three;
+          frog_three.ativo = 1;
+          frog_three.data_register = 28;
+          frog_three.offset = 0;
+          frog_three.coord_x = 300;
+          frog_three.coord_y = 15;
+          set_fixed_sprite(frog_three);
+
           sprite_fixed_t frog_four;
           frog_four.ativo = 1;
           frog_four.data_register = 29;
