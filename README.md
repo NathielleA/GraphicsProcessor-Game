@@ -27,8 +27,7 @@
     - [Lógica de Colisão](#lógica-de-colisão)
     - [Lógica do Jogo e Pontuação](#lógica-do-jogo-e-pontuação)
     - [Novas Sprites e Visualização do Jogo](#novas-sprites-e-visualização-do-jogo)
-- [Regras do Jogo e Jogabilidade]()
-- [Testes, Resultados e Desafios Encontrados]()
+- [Jogabilidade e Resultados]()
 - [Conclusão]()
 
 ## Introdução
@@ -389,6 +388,7 @@ Esse processo é ilustrado no diagrama presente na Figura x.
 
 Esse processo de conversão é fundamental para preparar os dados gráficos para serem manipulados e exibidos pela GPU na FPGA, garantindo uma renderização eficiente e precisa dos elementos gráficos no jogo.
 
+## Jogablidade e Resultados
 
 <div align="center">
    <img width="400px" src="img\gif-init.gif" />
@@ -429,3 +429,14 @@ Esse processo de conversão é fundamental para preparar os dados gráficos para
    <img width="400px" src="img\win.gif" />
     <p> Figura x. Vencendo.</p>
 </div>
+
+## Conclusão
+
+O desenvolvimento do jogo **Croak Rush** se deu em diversas fases descritos em todo o documento. A estrutura do jogo, organizada em estados distintos, permite uma transição suave entre diferentes fases, garantindo uma experiência de usuário fluida. A utilização de threads para gerenciar entradas e exibições assegura um desempenho eficiente e responsivo.
+
+A implementação de novas sprites e a gestão da memória gráfica na GPU aprimoram a qualidade visual do jogo, tornando-o mais imersivo e com mais identidade estetica. A detecção de colisões e o gerenciamento de vidas e sapos adicionam um nível de desafio que mantém o jogador engajado.
+
+Em suma, **Croak Rush** é um exemplo notável de como a aplicação prática de conceitos teóricos, juntamente com o uso consciente da placa disponível pode resultar em um jogo coeso e divertido, destacando a importância da integração harmoniosa entre lógica de programação, design visual e uso do hardware.
+
+## Referências
+
