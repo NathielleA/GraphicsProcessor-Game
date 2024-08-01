@@ -148,7 +148,40 @@ Em suma, a implementação de threads no desenvolvimento do jogo permitiu a exec
 ### Lógica das Mudanças de Telas
 ### Funções para movimentação das Sprites
 
+A movimentação horizontal dos elementos passivos do jogo, como os carros nas pistas e as sprites no rio, é implementada através de uma estrutura de dados que define as propriedades de cada sprite e de um loop que atualiza continuamente suas posições. Vamos descrever a lógica para cada grupo de sprites.
 
+#### Configuração Inicial das Sprites
+No início, cada sprite é configurado com suas coordenadas iniciais, direção, velocidade e outros parâmetros. As pistas e as vias aquáticas são posicionadas verticalmente em intervalos de 40 unidades na coordenada y.
+
+A velocidade e direção com que as os elementos se movem são definidos pelos seus atributos speed e direction, respectivamente. A velocidade possui uma lógica que utiliza a o resto da divisão de uma variável contadora com a velocidade da sprite, ilustrado na figura a baixo.
+
+<div align="center">
+   <img width="400px" src="" />
+    <p> Figura x. Como é definida a velecidade das Sprites na tela.</p>
+</div>
+
+#### Carros na Primeira Pista
+Os carros na primeira pista movem-se da direita para a esquerda. Cada carro é inicializado com sua posição x no final da tela e a posição y correspondente à primeira pista. A direção é definida como 0 (esquerda), e a velocidade é configurada para 2 unidades por ciclo de atualização.
+
+#### Carros na Segunda Pista
+Os carros na segunda pista movem-se da esquerda para a direita. Suas posições iniciais x estão no início da tela. A direção é definida como 1 (direita), e a velocidade é configurada para 4 unidades por ciclo de atualização.
+
+#### Caminhões na Terceira Pista
+Os caminhões na terceira pista também se movem da direita para a esquerda. Eles são inicializados com a mesma lógica dos carros da primeira pista, mas possuem uma velocidade diferente, definida como 3 unidades por ciclo de atualização. Cada caminhão é composto por duas partes (frente e traseira), que são posicionadas uma próxima à outra.
+
+#### Carros na Quarta Pista
+Os carros na quarta pista movem-se da esquerda para a direita. Suas posições iniciais x estão no início da tela, com a velocidade configurada para 1 unidade por ciclo de atualização.
+
+#### Condições de Movimentação das Sprites
+Dentro do loop principal, as posições das sprites são atualizadas continuamente, verificando se elas chegaram ao fim da tela para reposicioná-las no início, criando um efeito de loop infinito.
+
+#### Movimentação das Sprites no Rio
+A lógica de movimentação das sprites no rio é similar à dos carros, mas com diferentes velocidades e direções.
+
+#### Verificação do Estado do Jogo
+Dentro do loop principal da thread da movimentação, há uma condicional que verifica se o estado do jogo é GAME, se for ele ativa as Sprites com o bit 1, senão elas são desativadas com o bit de ativação igual a 0.
+
+em suma, a movimentação das sprites no jogo é implementada através de uma combinação de inicialização estática das posições e direções das sprites e uma lógica dinâmica dentro de um loop que atualiza continuamente suas coordenadas. As sprites se movem horizontalmente e, ao atingirem a borda da tela, são reposicionadas para criar um movimento contínuo e cíclico.
 
 ### Lógica de Colisão
 ### Lógica do Jogo e Pontuação
