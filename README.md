@@ -176,3 +176,7 @@ No caso de um sprite, a imagem é processada pixel a pixel para criar uma matriz
 
 Esso processo é ilustrado no diagrama presente na Figura x.
 
+<div align="center">
+   <img width="400px" src="img\diagram-sprites.png" />
+    <p> Figura x. Processo de conversão da Sprite para Matriz RGB.</p>
+</div>
