@@ -307,7 +307,7 @@ Em seguimento, com o objetivo de trazer uma visualização adequada ao tema e ob
 O jogo, Croak Rush, possui 11 novas sprites implementadas que são utiizadas, que são as apresentadas na figura a baixo.
 
 <div align="center">
-   <img width="330px" src="img\game-sprites.jpeg" />
+   <img width="300px" src="img\game-sprites.jpeg" />
     <p> Figura x. Novas Sprites implementadas para o jogo.</p>
 </div>
 
@@ -328,7 +328,7 @@ No caso de um sprite, a imagem é processada pixel a pixel para criar uma matriz
 Esse processo é ilustrado no diagrama presente na Figura x.
 
 <div align="center">
-   <img width="400px" src="img\diagram-sprites.png" />
+   <img width="500px" src="img\diagram-sprites.jpeg" />
     <p> Figura x. Processo de conversão da Sprite para Matriz RGB 400x3.</p>
 </div>
 
@@ -337,7 +337,7 @@ Agora, com relação às telas do jogo, foi seguido uma lógica semelhantes à d
 O jogo possui as seguintes telas:
 
 <div align="center">
-   <img width="400px" src="" />
+   <img width="500px" src="img\diagram-screens.jpeg" />
     <p> Figura x. Telas do Jogo.</p>
 </div>
 
