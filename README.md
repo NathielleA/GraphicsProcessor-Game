@@ -174,11 +174,11 @@ No caso de um sprite, a imagem é processada pixel a pixel para criar uma matriz
 
 5) **Armazenamento na Memória de Sprites:** Os valores RGB normalizados são salvos na memória de sprites, correspondendo a cada um dos 400 pixels que compõem o sprite. Um loop percorre cada pixel da imagem para realizar essa conversão e armazenamento. 
 
-Esso processo é ilustrado no diagrama presente na Figura x.
+Esse processo é ilustrado no diagrama presente na Figura x.
 
 <div align="center">
    <img width="400px" src="img\diagram-sprites.png" />
-    <p> Figura x. Processo de conversão da Sprite para Matriz RGB.</p>
+    <p> Figura x. Processo de conversão da Sprite para Matriz RGB 400x3.</p>
 </div>
 
 Agora, com relação às telas do jogo, foi seguido uma lógica semelhantes à das Sprites. Porém, além da matriz possuir um tamanho maior, sendo 4800x3, o valor das cores em RGB não eram por pixel, e sim, por blocos de background.
@@ -192,9 +192,19 @@ O jogo possui as seguintes telas:
 
 Para a conversão da tela inteira utilizando o conceito de background block, o processo é similar ao das Sprites, mas adaptado para uma imagem maior e possui uma processo diferente na fase de desenho da imagem:
 
-1) **Redimensionamento e pixelização de uma Imagem:**Para que não houvesse a necessidade de realizar um desenho 
+1) **Redimensionamento e pixelização de uma Imagem:** Paranão haver a necessidade de realizar um desenho do zero, porém, como precisaria ser uma imagem 80x60 pixels (quantidade total de blocos de fundo) que é considerada muito pequena, foi feito o redimensionamento de uma imagem já pronta para o tamanho adequado. Isso acarretou em uma pequena perda de nitidez da imagem, porém facilitou o processo de desenho.
 
-Leitura da Imagem: A imagem de fundo é carregada usando a biblioteca Pillow, e cada pixel é convertido para valores RGB.
-Normalização dos Valores: Assim como no caso do sprite, cada valor RGB é dividido por 32 para obter valores entre 0 e 8.
-Criação da Matriz: Uma matriz de dimensões 4800x3 é montada, representando os valores normalizados de cada pixel da imagem de fundo.
-Armazenamento em Blocos de Background: Os valores RGB normalizados são organizados em blocos de background e armazenados nos endereços correspondentes na memória de vídeo. Um loop percorre cada pixel da imagem para realizar essa conversão e armazenamento, garantindo que a tela inteira seja representada corretamente na matriz.
+2) **Leitura da Imagem:** A imagem de fundo é carregada usando a biblioteca Pillow, e cada pixel é convertido para valores RGB.
+
+3) **Normalização dos Valores:** Assim como no caso do sprite, cada valor RGB é dividido por 32 para obter valores entre 0 e 8.
+
+4) **Criação da Matriz:** Uma matriz de dimensões 4800x3 é montada, representando os valores normalizados de cada pixel da imagem de fundo.
+
+5) **Armazenamento em Blocos de Background:** Os valores RGB normalizados de cada pixel correspondem a blocos de background que são armazenados nos endereços correspondentes na memória de cada um.
+
+Esse processo é ilustrado no diagrama presente na Figura x.
+
+<div align="center">
+   <img width="400px" src="" />
+    <p> Figura x. Processo de conversão de uma Imagem em uma Matriz RGB 4800x3.</p>
+</div>
