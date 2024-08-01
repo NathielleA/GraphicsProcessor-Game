@@ -354,7 +354,7 @@ Agora, com relação às telas do jogo, foi seguido uma lógica semelhantes à d
 O jogo possui as seguintes telas:
 
 <div align="center">
-   <img width="500px" src="img\diagram-screens.jpeg" />
+   <img width="500px" src="img\screens.jpeg" />
     <p> Figura x. Telas do Jogo.</p>
 </div>
 
@@ -373,7 +373,7 @@ Para a conversão da tela inteira utilizando o conceito de background block, o p
 Esse processo é ilustrado no diagrama presente na Figura x.
 
 <div align="center">
-   <img width="400px" src="" />
+   <img width="500px" src="img\diagram-screens.jpeg" />
     <p> Figura x. Processo de conversão de uma Imagem em uma Matriz RGB 4800x3.</p>
 </div>
 
