@@ -200,7 +200,7 @@ Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`)
 A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
 
 <div align="center">
-   <img width=" " src="img\Fluxograma_thread_mouse.png" />
+   <img width=" " src="img\xcf\Fluxograma_thread_mouse.xcf" />
     <p> Figura x. Fluxograma da thread que gerencia o mouse.</p>
 </div>
 
