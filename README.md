@@ -446,4 +446,7 @@ Em suma, **Croak Rush** é um exemplo notável de como a aplicação prática de
 
 ## Referências
 
-- 
+- [TCC de Gabriel Sá Barreto - Desenvolvimento de uma Arquitetura Baseada em Sprites para criação de Jogos 2D em Ambientes Reconfiguraveis utilizando dispositivos FPGA](https://drive.google.com/file/d/1MlIlpB9TSnoPGEMkocr36EH9-CFz8psO/view)
+- [Processos, Tarefas e Threads - Medium](https://medium.com/@alex.sousa.aux/processos-tarefas-e-threads-a02c927a40bf)
+- [O que são threads do processador e quais os benefícios do multithreading? - Tecnoblog](https://tecnoblog.net/responde/o-que-e-thread-processador/)
+- [Manual do Kit de Desenvolvimento DE1-SoC](https://www.terasic.com.tw/cgi-bin/page/archive.pl?Language=English&CategoryNo=205&No=836&PartNo=4#contents)
