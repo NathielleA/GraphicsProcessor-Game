@@ -149,7 +149,7 @@ Com o mapeamento concluído e o endereço base obtido, denominado `LW_virtual`, 
 Após o mapeamento, a função `munmap()` é usada para desmapear a memória, liberando o espaço de endereços, e o descritor de arquivo para `/dev/mem` é fechado.
 
 <div align="center">
-   <img width=" " src="img\Mapeamento.png" />
+   <img width="" src="img\Mapeamento.png" />
     <p> Figura x. Sequência de etapas para iniciar e finalizar o mapeamento de memória.</p>
 </div>
 
