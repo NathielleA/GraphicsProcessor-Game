@@ -149,7 +149,7 @@ Com o mapeamento concluído e o endereço base obtido, denominado `LW_virtual`, 
 Após o mapeamento, a função `munmap()` é usada para desmapear a memória, liberando o espaço de endereços, e o descritor de arquivo para `/dev/mem` é fechado.
 
 <div align="center">
-   <img width="550px" src="img\Mapeamento.png" />
+   <img width=" " src="img\Mapeamento.png" />
     <p> Figura x. Sequência de etapas para iniciar e finalizar o mapeamento de memória.</p>
 </div>
 
@@ -167,7 +167,7 @@ No loop contínuo da thread, o estado dos botões é lido e comparado com o esta
 Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha o descritor de arquivo associado a `/dev/mem com` `close()`, garantindo que os recursos sejam liberados adequadamente. A thread termina sua execução com `pthread_exit()`.
 
 <div align="center">
-   <img width="550px" src="img\Fluxograma_thread_button.png" />
+   <img width=" " src="img\Fluxograma_thread_button.png" />
     <p> Figura x. Fluxograma da thread que gerencia os botões.</p>
 </div>
 
@@ -175,7 +175,7 @@ Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha
 Após a configuração inicial do mapeamento de memória, a thread display_thread configura ponteiros para acessar as áreas de memória do display, associadas aos segmentos de um display de sete segmentos, como HEX0_BASE, HEX1_BASE, entre outros.
 
 <div align="center">
-   <img width="550px" src="img\Fluxograma_thread_display.png" />
+   <img width=" " src="img\Fluxograma_thread_display.png" />
     <p> Figura x. Fluxograma da thread que gerencia o display.</p>
 </div>
 
@@ -200,7 +200,7 @@ Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`)
 A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
 
 <div align="center">
-   <img width="550px" src="img\Fluxograma_thread_mouse.png" />
+   <img width=" " src="img\Fluxograma_thread_mouse.png" />
     <p> Figura x. Fluxograma da thread que gerencia o mouse.</p>
 </div>
 
@@ -261,7 +261,7 @@ O funcionamento da função é o seguinte: primeiro, verifica se o contador é m
 Após atualizar a coordenada x, a função retorna 0, sinalizando que a operação de movimentação foi concluída com sucesso. Em resumo, a função garante que o sprite se mova de forma controlada e fluida, conforme definido pela sua velocidade e direção.
 
 <div align="center">
-   <img width="550px" src="img\fluxograma_coordinate.png" />
+   <img width=" " src="img\fluxograma_coordinate.png" />
     <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
 </div>
 
@@ -274,7 +274,7 @@ Para verificar se dois retângulos estão colidindo, a função utiliza condiç�
 Se todas essas condições forem verdadeiras, significa que os retângulos se sobrepõem e houve uma colisão. Nesse caso, a função define o atributo collision de ambos os sprites como 1, indicando a colisão. Caso contrário, o atributo collision é definido como 0, indicando a ausência de colisão.
 
 <div align="center">
-   <img width="550px" src="img\fluxograma_collision.png" />
+   <img width=" " src="img\fluxograma_collision.png" />
     <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
 </div>
 
