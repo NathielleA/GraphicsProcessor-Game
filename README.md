@@ -186,30 +186,10 @@ A thread visul_thread é responsável pela atualização contínua dos sprites n
 
 No loop infinito, a thread verifica o estado do jogo e decide se deve atualizar a tela ou aguardar. Quando o jogo está ativo, a função percorre todos os sprites (como carros e troncos), atualizando suas posições com base na velocidade e direção. A função também verifica se os sprites precisam ser reposicionados ou reiniciados se saírem dos limites da tela. Após atualizar a posição dos sprites, a tela é atualizada para refletir as mudanças.
 
-Para evitar uso excessivo de CPU, a função faz uma breve pausa no final de cada iteração do loop.
-
-#### Thread para Gerenciamento das Colisões
-A thread collision_thread é responsável pela detecção e gerenciamento de colisões entre o jogador e outros elementos do jogo. Ela verifica o estado geral do jogo e a posição do jogador. Quando o jogo está ativo, a thread entra em um loop infinito para percorrer todos os sprites ativos, como carros e troncos, e verificar possíveis colisões com o jogador.
-
-A verificação de colisão é feita comparando as posições e tamanhos dos sprites para determinar se há sobreposição. Se uma colisão é detectada, o estado do jogo é atualizado para refletir a colisão, podendo incluir a reinicialização do jogador ou a mudança de seu status. A função também pode atualizar a pontuação ou registrar informações adicionais conforme a lógica do jogo. Após verificar todas as colisões possíveis, a função faz uma breve pausa antes de repetir o processo.
-
-### Lógica das Mudanças de Telas
-
-
-
-### Funções para movimentação das Sprites
-
-A movimentação horizontal dos elementos passivos do jogo, como os carros nas pistas e as sprites no rio, é implementada através de uma estrutura de dados que define as propriedades de cada sprite e de um loop que atualiza continuamente suas posições. Vamos descrever a lógica para cada grupo de sprites.
+É seguida a seguinte lógica para cada grupo de sprites.
 
 #### Configuração Inicial das Sprites
 No início, cada sprite é configurado com suas coordenadas iniciais, direção, velocidade e outros parâmetros. As pistas e as vias aquáticas são posicionadas verticalmente em intervalos de 40 unidades na coordenada y.
-
-A velocidade e direção com que as os elementos se movem são definidos pelos seus atributos speed e direction, respectivamente. A velocidade possui uma lógica que utiliza a o resto da divisão de uma variável contadora com a velocidade da sprite, ilustrado na figura a baixo.
-
-<div align="center">
-   <img width="400px" src="" />
-    <p> Figura x. Como é definida a velecidade das Sprites na tela.</p>
-</div>
 
 #### Carros na Primeira Pista
 Os carros na primeira pista movem-se da direita para a esquerda. Cada carro é inicializado com sua posição x no final da tela e a posição y correspondente à primeira pista. A direção é definida como 0 (esquerda), e a velocidade é configurada para 2 unidades por ciclo de atualização.
@@ -232,10 +212,54 @@ A lógica de movimentação das sprites no rio é similar à dos carros, mas com
 #### Verificação do Estado do Jogo
 Dentro do loop principal da thread da movimentação, há uma condicional que verifica se o estado do jogo é GAME, se for ele ativa as Sprites com o bit 1, senão elas são desativadas com o bit de ativação igual a 0.
 
-em suma, a movimentação das sprites no jogo é implementada através de uma combinação de inicialização estática das posições e direções das sprites e uma lógica dinâmica dentro de um loop que atualiza continuamente suas coordenadas. As sprites se movem horizontalmente e, ao atingirem a borda da tela, são reposicionadas para criar um movimento contínuo e cíclico.
+Para evitar uso excessivo de CPU, a função faz uma breve pausa no final de cada iteração do loop.
+
+#### Thread para Gerenciamento das Colisões
+A thread collision_thread é responsável pela detecção e gerenciamento de colisões entre o jogador e outros elementos do jogo. Ela verifica o estado geral do jogo e a posição do jogador. Quando o jogo está ativo, a thread entra em um loop infinito para percorrer todos os sprites ativos, como carros e troncos, e verificar possíveis colisões com o jogador.
+
+A verificação de colisão é feita comparando as posições e tamanhos dos sprites para determinar se há sobreposição. Se uma colisão é detectada, o estado do jogo é atualizado para refletir a colisão, podendo incluir a reinicialização do jogador ou a mudança de seu status. A função também pode atualizar a pontuação ou registrar informações adicionais conforme a lógica do jogo. Após verificar todas as colisões possíveis, a função faz uma breve pausa antes de repetir o processo.
+
+### Lógica das Mudanças de Telas
+
+Para gerenciar a troca de telas, foi implementada uma máquina de estados que controla as diferentes fases do jogo: **START** (início do jogo), **GAME** (fase principal), **PAUSE** (pausa), **GAMEOVER** (fim do jogo) e **VICTORY** (vitória). A transição entre esses estados é controlada com base nas entradas dos botões.
+
+A função `change_state()` atualiza o estado do jogo analisando o estado atual (`state_game`) e as entradas dos botões. Por exemplo, se o jogo está no estado **START** e o primeiro botão é pressionado, o estado é alterado para **GAME**. Em estados como **PAUSE**, diferentes botões podem levar o jogo a retornar ao estado START ou voltar ao estado **GAME**. A função também atualiza a variável previous_state para rastrear o estado anterior, o que ajuda a comparar e tomar decisões baseadas nas mudanças de estado.
+
+No loop principal do jogo, o programa verifica continuamente o estado atual e realiza ações específicas para cada um. No estado **START**, a tela inicial é configurada. No estado **GAME**, a tela é atualizada, o movimento do cursor é gerenciado e colisões são verificadas. No estado **PAUSE**, a tela de pausa é exibida. Quando o jogo chega ao estado **GAMEOVER**, a tela de fim de jogo é mostrada e as variáveis são redefinidas. No estado **VICTORY**, a tela de vitória é exibida e as variáveis são resetadas.
+
+A lógica inclui funções para limpar e inicializar elementos da tela, como sprites e fundo, garantindo que a exibição seja adequada ao estado atual e não contenha informações desatualizadas.
+
+Em resumo, a troca de telas é gerenciada por uma máquina de estados que responde às entradas do usuário, atualizando o estado do jogo e a tela de acordo com o progresso e as ações do jogador.
+
+### Funções para movimentação das Sprites
+
+A função `increase_coordinate_sprite()` é projetada para atualizar a posição horizontal (**coordenada x**) de um sprite com base em sua velocidade e direção.
+Ela recebe dois parâmetros: um ponteiro para a estrutura do sprite, que contém informações sobre a posição (**coord_x**), a velocidade (**speed**), o deslocamento por movimento (**step_x**) e a direção (**direction**), e um contador (**counter**) que ajuda a determinar quando o sprite deve se mover.
+
+O funcionamento da função é o seguinte: primeiro, verifica se o contador é múltiplo da velocidade do sprite, usando a expressão `counter % sprite->speed == 0`p . Se essa condição for verdadeira, significa que é hora de atualizar a posição do sprite. Dependendo da direção do movimento, a coordenada x do sprite é ajustada. Se a direção é 1 (indicando movimento para a direita), a coordenada x é incrementada pelo valor de step_x, movendo o sprite para a direita. Se a direção é 0 (indicando movimento para a esquerda), a coordenada x é decrementada pelo valor de step_x, movendo o sprite para a esquerda.
+
+Após atualizar a coordenada x, a função retorna 0, sinalizando que a operação de movimentação foi concluída com sucesso. Em resumo, a função garante que o sprite se mova de forma controlada e fluida, conforme definido pela sua velocidade e direção.
 
 ### Lógica de Colisão
+
+A verificação de colisão entre dois sprites é realizada pela função `collision()`, que determina se dois retângulos se sobrepõem. Cada sprite é representado por um retângulo cujas coordenadas iniciais são armazenadas em coord_x e coord_y. A função compara a posição desses retângulos para verificar a interseção.
+
+Para verificar se dois retângulos estão colidindo, a função utiliza condições baseadas na posição e tamanho dos retângulos. Primeiro, verifica se a borda esquerda do primeiro retângulo (sprite1) está à esquerda da borda direita do segundo retângulo (sprite2). Em seguida, checa se a borda direita do primeiro retângulo está à direita da borda esquerda do segundo retângulo. Similarmente, a função verifica a sobreposição vertical, comparando a borda superior do primeiro retângulo com a borda inferior do segundo e a borda inferior do primeiro com a borda superior do segundo.
+
+Se todas essas condições forem verdadeiras, significa que os retângulos se sobrepõem e houve uma colisão. Nesse caso, a função define o atributo collision de ambos os sprites como 1, indicando a colisão. Caso contrário, o atributo collision é definido como 0, indicando a ausência de colisão.
+
 ### Lógica do Jogo e Pontuação
+
+O jogo é inicialmente configurado com a definição dos sprites e o estado do jogo é estabelecido como **START**. A inicialização também inclui a criação de várias threads para gerenciar entradas de teclado, mouse, visualização, colisão e exibição.
+
+No loop principal, o estado atual é monitorado e atualizado. No estado **START**, a tela inicial é configurada e limpa se houver uma transição de estado. No estado **GAME**, a tela do jogo é exibida, e o movimento do cursor é gerenciado com base na posição vertical. O `counter_river` é incrementado para controlar o movimento do cursor e ajustar sua posição. Se o cursor atinge a parte inferior da tela, a quantidade de sapos (`frogs`) é reduzida e o cursor é reposicionado. Se a quantidade de sapos chega a zero, o jogo muda para o estado **VICTORY**.
+
+Durante o jogo, a detecção de colisões é crucial. Se o cursor colide com outros sprites e ainda há vidas restantes, a vida do jogador é reduzida e o cursor é reposicionado. Quando não há mais vidas, o jogo muda para o estado **GAMEOVER**, onde a tela de fim de jogo é exibida e as variáveis de vida e sapos são redefinidas.
+
+No estado **PAUSE**, a tela de pausa é exibida se houver uma transição de estado, e o jogo permanece pausado até que o jogador retome ou saia do estado de pausa. Quando o jogo entra no estado **GAMEOVER**, a tela de fim de jogo é exibida e o jogo é resetado com vidas e sapos redefinidos. Da mesma forma, no estado **VICTORY**, a tela de vitória é mostrada e as variáveis são resetadas.
+
+A pontuação do jogo é refletida na contagem de vidas e sapos. O jogador começa com um número fixo de vidas e sapos, e a perda de vidas ocorre quando o cursor colide com obstáculos. A diminuição dos sapos e a eventual vitória ou derrota do jogador são geridas por mudanças de estado no jogo e pela atualização da tela conforme o progresso ou falhas do jogador.
+
 ### Novas Sprites e Visualização do Jogo
 
 Em seguimento, com o objetivo de trazer uma visualização adequada ao tema e objetivos do jogo, foram implememntadas novas Sprites na Memória de Sprites presentes na GPU. Essa memória do processador gráfico possui um endereçamento por pixel, onde cada Sprite possui 400 pixels e é possível armazenar 32 Sprites ao todo. Para formar uma nova, é preciso enviar à GPU o local do pixel na memória e o seu valor em RGB, mudando a cor do respectivo pixel.
