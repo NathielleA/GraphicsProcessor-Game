@@ -248,6 +248,11 @@ Para verificar se dois retângulos estão colidindo, a função utiliza condiç�
 
 Se todas essas condições forem verdadeiras, significa que os retângulos se sobrepõem e houve uma colisão. Nesse caso, a função define o atributo collision de ambos os sprites como 1, indicando a colisão. Caso contrário, o atributo collision é definido como 0, indicando a ausência de colisão.
 
+<div align="center">
+   <img width="330px" src="img\fluxograma_collision.png" />
+    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+</div>
+
 ### Lógica do Jogo e Pontuação
 
 O jogo é inicialmente configurado com a definição dos sprites e o estado do jogo é estabelecido como **START**. A inicialização também inclui a criação de várias threads para gerenciar entradas de teclado, mouse, visualização, colisão e exibição.
