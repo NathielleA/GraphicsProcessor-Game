@@ -196,13 +196,13 @@ O cursor é configurado com parâmetros iniciais, como posição (coord_x, coord
 
 Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`) e processa eventos do mouse para atualizar a posição do cursor. Eventos do tipo `EV_REL` e `EV_KEY` ajustam a coordenada horizontal (coord_x) e vertical (coord_y) conforme o movimento do mouse e a interação com os botões do mouse. Quando o jogo não está em GAME, o cursor é desativado (`cursor.ativo = 0`).
 
-#### Thread para Gerenciamento da Visualização dos Sprites
-A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
-
 <div align="center">
    <img width=" " src="img\Fluxograma_thread_mouse.png" />
     <p> Figura x. Fluxograma da thread que gerencia o mouse.</p>
 </div>
+
+#### Thread para Gerenciamento da Visualização dos Sprites
+A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
 
 No loop infinito, a thread verifica o estado do jogo e decide se deve atualizar a tela ou aguardar. Quando o jogo está ativo, a função percorre todos os sprites (como carros e troncos), atualizando suas posições com base na velocidade e direção. A função também verifica se os sprites precisam ser reposicionados ou reiniciados se saírem dos limites da tela. Após atualizar a posição dos sprites, a tela é atualizada para refletir as mudanças.
 
