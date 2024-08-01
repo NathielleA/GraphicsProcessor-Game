@@ -162,7 +162,7 @@ No loop contínuo da thread, o estado dos botões é lido e comparado com o esta
 Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha o descritor de arquivo associado a `/dev/mem com` `close()`, garantindo que os recursos sejam liberados adequadamente. A thread termina sua execução com `pthread_exit()`.
 
 <div align="center">
-   <img width="550px" src="img\fluxograma_thread_button.png" />
+   <img width="550px" src="img\Fluxograma_thread_button.png" />
     <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
 </div>
 
@@ -190,7 +190,7 @@ Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`)
 A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
 
 <div align="center">
-   <img width="550px" src="img\fluxograma_thread_mouse.png" />
+   <img width="550px" src="img\Fluxograma_thread_mouse.png" />
     <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
 </div>
 
