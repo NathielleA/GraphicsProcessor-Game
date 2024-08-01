@@ -161,6 +161,11 @@ No loop contínuo da thread, o estado dos botões é lido e comparado com o esta
 
 Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha o descritor de arquivo associado a `/dev/mem com` `close()`, garantindo que os recursos sejam liberados adequadamente. A thread termina sua execução com `pthread_exit()`.
 
+<div align="center">
+   <img width="550px" src="img\fluxograma_thread_button.png" />
+    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+</div>
+
 #### Thread para Gerenciamento do Display
 Após a configuração inicial do mapeamento de memória, a thread display_thread configura ponteiros para acessar as áreas de memória do display, associadas aos segmentos de um display de sete segmentos, como HEX0_BASE, HEX1_BASE, entre outros.
 
@@ -183,6 +188,11 @@ Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`)
 
 #### Thread para Gerenciamento da Visualização dos Sprites
 A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
+
+<div align="center">
+   <img width="550px" src="img\fluxograma_thread_mouse.png" />
+    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+</div>
 
 No loop infinito, a thread verifica o estado do jogo e decide se deve atualizar a tela ou aguardar. Quando o jogo está ativo, a função percorre todos os sprites (como carros e troncos), atualizando suas posições com base na velocidade e direção. A função também verifica se os sprites precisam ser reposicionados ou reiniciados se saírem dos limites da tela. Após atualizar a posição dos sprites, a tela é atualizada para refletir as mudanças.
 
@@ -240,6 +250,11 @@ O funcionamento da função é o seguinte: primeiro, verifica se o contador é m
 
 Após atualizar a coordenada x, a função retorna 0, sinalizando que a operação de movimentação foi concluída com sucesso. Em resumo, a função garante que o sprite se mova de forma controlada e fluida, conforme definido pela sua velocidade e direção.
 
+<div align="center">
+   <img width="550px" src="img\fluxograma_coordinate.png" />
+    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+</div>
+
 ### Lógica de Colisão
 
 A verificação de colisão entre dois sprites é realizada pela função `collision()`, que determina se dois retângulos se sobrepõem. Cada sprite é representado por um retângulo cujas coordenadas iniciais são armazenadas em coord_x e coord_y. A função compara a posição desses retângulos para verificar a interseção.
@@ -249,7 +264,7 @@ Para verificar se dois retângulos estão colidindo, a função utiliza condiç�
 Se todas essas condições forem verdadeiras, significa que os retângulos se sobrepõem e houve uma colisão. Nesse caso, a função define o atributo collision de ambos os sprites como 1, indicando a colisão. Caso contrário, o atributo collision é definido como 0, indicando a ausência de colisão.
 
 <div align="center">
-   <img width="550px"src="img\fluxograma_collision.png" />
+   <img width="550px" src="img\fluxograma_collision.png" />
     <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
 </div>
 
