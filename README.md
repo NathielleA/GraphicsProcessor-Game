@@ -147,6 +147,9 @@ Em suma, a implementação de threads no desenvolvimento do jogo permitiu a exec
 ### Implementação das Threads
 ### Lógica das Mudanças de Telas
 ### Funções para movimentação das Sprites
+
+
+
 ### Lógica de Colisão
 ### Lógica do Jogo e Pontuação
 ### Novas Sprites e Visualização do Jogo
@@ -208,3 +211,5 @@ Esse processo é ilustrado no diagrama presente na Figura x.
    <img width="400px" src="" />
     <p> Figura x. Processo de conversão de uma Imagem em uma Matriz RGB 4800x3.</p>
 </div>
+
+Esse processo de conversão é fundamental para preparar os dados gráficos para serem manipulados e exibidos pela GPU na FPGA, garantindo uma renderização eficiente e precisa dos elementos gráficos no jogo.
