@@ -148,6 +148,11 @@ Com o mapeamento concluído e o endereço base obtido, denominado `LW_virtual`, 
 
 Após o mapeamento, a função `munmap()` é usada para desmapear a memória, liberando o espaço de endereços, e o descritor de arquivo para `/dev/mem` é fechado.
 
+<div align="center">
+   <img width="550px" src="img\Mapeamento.png" />
+    <p> Figura x. Sequência de etapas para iniciar e finalizar o mapeamento de memória.</p>
+</div>
+
 Embora o mesmo método possa ser empregado para o acesso ao mouse, optou-se por utilizar a biblioteca `input.h`, que abstrai a complexidade do mapeamento direto da memória, oferecendo uma interface mais simplificada e eliminando a necessidade de processamento manual das informações obtidas.
 
 ### Implementação das Threads
@@ -163,11 +168,16 @@ Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha
 
 <div align="center">
    <img width="550px" src="img\Fluxograma_thread_button.png" />
-    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+    <p> Figura x. Fluxograma da thread que gerencia os botões.</p>
 </div>
 
 #### Thread para Gerenciamento do Display
 Após a configuração inicial do mapeamento de memória, a thread display_thread configura ponteiros para acessar as áreas de memória do display, associadas aos segmentos de um display de sete segmentos, como HEX0_BASE, HEX1_BASE, entre outros.
+
+<div align="center">
+   <img width="550px" src="img\Fluxograma_thread_display.png" />
+    <p> Figura x. Fluxograma da thread que gerencia o display.</p>
+</div>
 
 No loop principal, a thread atualiza o display com base no estado atual do jogo, representado pela variável global state_game. Dependendo do estado:
 
@@ -191,7 +201,7 @@ A thread visul_thread é responsável pela atualização contínua dos sprites n
 
 <div align="center">
    <img width="550px" src="img\Fluxograma_thread_mouse.png" />
-    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+    <p> Figura x. Fluxograma da thread que gerencia o mouse.</p>
 </div>
 
 No loop infinito, a thread verifica o estado do jogo e decide se deve atualizar a tela ou aguardar. Quando o jogo está ativo, a função percorre todos os sprites (como carros e troncos), atualizando suas posições com base na velocidade e direção. A função também verifica se os sprites precisam ser reposicionados ou reiniciados se saírem dos limites da tela. Após atualizar a posição dos sprites, a tela é atualizada para refletir as mudanças.
@@ -252,7 +262,7 @@ Após atualizar a coordenada x, a função retorna 0, sinalizando que a operaç�
 
 <div align="center">
    <img width="550px" src="img\fluxograma_coordinate.png" />
-    <p> Figura x. Fluxograma da função que verifica colisão entre sprites.</p>
+    <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
 </div>
 
 ### Lógica de Colisão
