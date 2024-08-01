@@ -142,10 +142,61 @@ Em suma, a implementação de threads no desenvolvimento do jogo permitiu a exec
 
 ### Conexão com os periféricos (botões, display e mouse)
 
-*precisa o mouse?
+A conexão com os botões e o display é realizada por meio do mapeamento da memória da placa, técnica essencial para a integração eficaz entre hardware e software em sistemas computacionais. Inicialmente, o arquivo especial `/dev/mem` é aberto com permissões de leitura e escrita (`O_RDWR`) e sincronização (`O_SYNC`). Isso permite ao programa acessar e modificar diretamente a memória física do sistema. Em seguida, a função `mmap()` é utilizada para mapear uma região da memória física para o espaço de endereçamento do processo.
+
+Com o mapeamento concluído e o endereço base obtido, denominado `LW_virtual`, são configurados ponteiros para acessar áreas específicas da memória. Os deslocamentos necessários para acessar os periféricos estão detalhados em um documento auxiliar sobre a arquitetura do processador gráfico. Por exemplo, deslocamentos como `HEX0_BASE (0x10)` e `HEX1_BASE (0x20)` permitem acessar diferentes registradores ou áreas de memória do display. Esse procedimento é utilizado tanto para a leitura dos botões quanto para o controle do display.
+
+Após o mapeamento, a função `munmap()` é usada para desmapear a memória, liberando o espaço de endereços, e o descritor de arquivo para `/dev/mem` é fechado.
+
+Embora o mesmo método possa ser empregado para o acesso ao mouse, optou-se por utilizar a biblioteca `input.h`, que abstrai a complexidade do mapeamento direto da memória, oferecendo uma interface mais simplificada e eliminando a necessidade de processamento manual das informações obtidas.
 
 ### Implementação das Threads
+
+Para gerenciar os diversos dispositivos de entrada e saída, foi implementada uma abordagem baseada em múltiplas threads, permitindo a execução simultânea de tarefas críticas sem bloqueio e otimizando o desempenho do sistema. A seguir, detalhamos a função de cada thread no jogo.
+
+#### Thread para Gerenciamento dos Botões
+A thread key_thread inicia sua operação mapeando a memória do sistema para o endereço base `LW_BRIDGE_BASE`, cobrindo a área definida por `LW_BRIDGE_SPAN`. Isso permite ao programa ler e escrever diretamente nos registradores de controle dos botões. Um ponteiro, `KEY_ptr`, é configurado para acessar a área de memória dos botões, usando o deslocamento definido por `KEY_BASE`. Um valor de captura de borda (edge_capture) é inicializado para detectar mudanças no estado dos botões.
+
+No loop contínuo da thread, o estado dos botões é lido e comparado com o estado anterior. Se uma mudança for detectada, edge_capture é atualizado. A função `change_state()` é chamada a cada iteração para alterar o estado do jogo com base nas entradas dos botões e no estado atual. Dependendo do estado do jogo (START, GAME, PAUSE, GAMEOVER, VICTORY), o estado é atualizado conforme os botões pressionados e o valor de edge_capture.
+
+Ao final de sua execução, a thread desmapeia a memória com `munmap()` e fecha o descritor de arquivo associado a `/dev/mem com` `close()`, garantindo que os recursos sejam liberados adequadamente. A thread termina sua execução com `pthread_exit()`.
+
+#### Thread para Gerenciamento do Display
+Após a configuração inicial do mapeamento de memória, a thread display_thread configura ponteiros para acessar as áreas de memória do display, associadas aos segmentos de um display de sete segmentos, como HEX0_BASE, HEX1_BASE, entre outros.
+
+No loop principal, a thread atualiza o display com base no estado atual do jogo, representado pela variável global state_game. Dependendo do estado:
+
+- **Estado START:** Todos os segmentos do display são configurados para um padrão específico, indicando a tela de introdução ou a configuração inicial do jogo. O padrão 0b1111111 representa todos os segmentos apagados.
+
+- **Estado GAME:** A thread alterna entre dois padrões de exibição a cada dois segundos. Se o valor de i é par, o display mostra padrões binários que representam o número de sapos (frogs). Se i é ímpar, exibe um padrão diferente que reflete o número de vidas (life), usando a função `num_to_bin()` para converter esses valores em binário.
+
+- **Estado PAUSE:** Todos os segmentos do display são desligados, indicando que o jogo está em pausa.
+
+Se o estado do jogo não corresponder a nenhum dos casos definidos, a thread continua sem alterar o display.
+
+#### Thread para Gerenciamento do Mouse
+A thread mouse_thread começa abrindo o dispositivo de entrada do mouse localizado em `/dev/input/event0` com permissões de leitura (`O_RDONLY`). Se a abertura falhar, uma mensagem de erro é exibida e a thread encerra sua execução. Após uma abertura bem-sucedida, a thread utiliza uma estrutura `input_event` para armazenar eventos do mouse lidos do dispositivo.
+
+O cursor é configurado com parâmetros iniciais, como posição (coord_x, coord_y), velocidade de movimento (step_x, step_y), e outras características. No loop principal, a função `read()` é usada para ler eventos do mouse. A thread verifica se a leitura foi bem-sucedida e se o número de bytes lidos corresponde ao esperado. Se houver erro, uma mensagem de erro é exibida e a thread encerra.
+
+Quando o jogo está no estado GAME, a thread ativa o cursor (`cursor.ativo = 1`) e processa eventos do mouse para atualizar a posição do cursor. Eventos do tipo `EV_REL` e `EV_KEY` ajustam a coordenada horizontal (coord_x) e vertical (coord_y) conforme o movimento do mouse e a interação com os botões do mouse. Quando o jogo não está em GAME, o cursor é desativado (`cursor.ativo = 0`).
+
+#### Thread para Gerenciamento da Visualização dos Sprites
+A thread visul_thread é responsável pela atualização contínua dos sprites no jogo. Ela configura variáveis que definem os limites horizontais da tela e um contador para o tempo de exibição dos sprites.
+
+No loop infinito, a thread verifica o estado do jogo e decide se deve atualizar a tela ou aguardar. Quando o jogo está ativo, a função percorre todos os sprites (como carros e troncos), atualizando suas posições com base na velocidade e direção. A função também verifica se os sprites precisam ser reposicionados ou reiniciados se saírem dos limites da tela. Após atualizar a posição dos sprites, a tela é atualizada para refletir as mudanças.
+
+Para evitar uso excessivo de CPU, a função faz uma breve pausa no final de cada iteração do loop.
+
+#### Thread para Gerenciamento das Colisões
+A thread collision_thread é responsável pela detecção e gerenciamento de colisões entre o jogador e outros elementos do jogo. Ela verifica o estado geral do jogo e a posição do jogador. Quando o jogo está ativo, a thread entra em um loop infinito para percorrer todos os sprites ativos, como carros e troncos, e verificar possíveis colisões com o jogador.
+
+A verificação de colisão é feita comparando as posições e tamanhos dos sprites para determinar se há sobreposição. Se uma colisão é detectada, o estado do jogo é atualizado para refletir a colisão, podendo incluir a reinicialização do jogador ou a mudança de seu status. A função também pode atualizar a pontuação ou registrar informações adicionais conforme a lógica do jogo. Após verificar todas as colisões possíveis, a função faz uma breve pausa antes de repetir o processo.
+
 ### Lógica das Mudanças de Telas
+
+
+
 ### Funções para movimentação das Sprites
 
 A movimentação horizontal dos elementos passivos do jogo, como os carros nas pistas e as sprites no rio, é implementada através de uma estrutura de dados que define as propriedades de cada sprite e de um loop que atualiza continuamente suas posições. Vamos descrever a lógica para cada grupo de sprites.
