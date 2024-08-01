@@ -150,3 +150,7 @@ Em suma, a implementação de threads no desenvolvimento do jogo permitiu a exec
 ### Lógica de Colisão
 ### Lógica do Jogo e Pontuação
 ### Novas Sprites e Visualização do Jogo
+
+Em seguimento, com o objetivo de trazer uma visualização adequada ao tema e objetivos do jogo, foram implememntadas novas Sprites na Memória de Sprites presentes na GPU. Essa memória do processador gráfico possui um endereçamento por pixel, onde cada Sprite possui 400 pixels e é possível armazenar 32 Sprites ao todo. Para formar uma nova, é preciso enviar à GPU o local do pixel na memória e o seu valor em RGB, mudando a cor do respectivo pixel.
+
+
