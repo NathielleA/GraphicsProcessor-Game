@@ -260,12 +260,12 @@ O funcionamento da função é o seguinte: primeiro, verifica se o contador é m
 
 <div align="center">
    <img width=" " src="img\mov1.png" />
-    <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
+    <p> Figura x. Exemplo de movimentação de uma sprite que tem velocidade 1.</p>
 </div>
 
 <div align="center">
    <img width=" " src="img\mov2.png" />
-    <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
+    <p> Figura x. Exemplo de movimentação de uma sprite que tem velocidade 2.</p>
 </div>
 
 Após atualizar a coordenada x, a função retorna 0, sinalizando que a operação de movimentação foi concluída com sucesso. Em resumo, a função garante que o sprite se mova de forma controlada e fluida, conforme definido pela sua velocidade e direção.
