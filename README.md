@@ -421,7 +421,7 @@ Esse processo de conversão é fundamental para preparar os dados gráficos para
 </div>
 
 <div align="center">
-   <img width="" src="" />
+   <img width="400px" src="img\game-over.gif" />
     <p> Figura x. Colidindo, perdendo as vidas e tela de Game Over.</p>
 </div>
 
