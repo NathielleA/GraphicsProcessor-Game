@@ -123,6 +123,11 @@ A utilização de threads foi uma parte crucial no desenvolvimento do jogo, perm
 #### O que é uma Thread?
 Uma thread é a menor unidade de processamento que pode ser realizada em um sistema operacional. Diferente de um processo, que possui seu próprio espaço de memória, uma thread compartilha o mesmo espaço de memória do processo ao qual pertence, permitindo uma comunicação rápida e eficiente entre threads dentro do mesmo processo.
 
+<div align="center">
+   <img width="" src="img\threads.png" />
+    <p> Figura x. Diagrama funcionamento de Threads (Fonte: https://medium.com).</p>
+</div>
+
 #### Funcionamento de Threads
 As threads permitem a execução de diferentes partes de um programa simultaneamente. Cada thread possui seu próprio conjunto de registros, pilha e contador de programa, mas compartilha recursos como memória e arquivos abertos com outras threads do mesmo processo. Isso facilita a execução concorrente de tarefas, como atualizações gráficas e controle de entrada do usuário no contexto de um jogo.
 
@@ -171,6 +176,11 @@ Após o mapeamento, a função `munmap()` é usada para desmapear a memória, li
 </div>
 
 Embora o mesmo método possa ser empregado para o acesso ao mouse, optou-se por utilizar a biblioteca `input.h`, que abstrai a complexidade do mapeamento direto da memória, oferecendo uma interface mais simplificada e eliminando a necessidade de processamento manual das informações obtidas.
+
+<div align="center">
+   <img width="" src="img\Mapeamento.png" />
+    <p> Figura x. Diagrama funcionamento de Threads.</p>
+</div>
 
 ### Implementação das Threads
 
