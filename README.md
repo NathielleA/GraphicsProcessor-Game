@@ -258,6 +258,16 @@ Ela recebe dois parâmetros: um ponteiro para a estrutura do sprite, que contém
 
 O funcionamento da função é o seguinte: primeiro, verifica se o contador é múltiplo da velocidade do sprite, usando a expressão `counter % sprite->speed == 0`p . Se essa condição for verdadeira, significa que é hora de atualizar a posição do sprite. Dependendo da direção do movimento, a coordenada x do sprite é ajustada. Se a direção é 1 (indicando movimento para a direita), a coordenada x é incrementada pelo valor de step_x, movendo o sprite para a direita. Se a direção é 0 (indicando movimento para a esquerda), a coordenada x é decrementada pelo valor de step_x, movendo o sprite para a esquerda.
 
+<div align="center">
+   <img width=" " src="img\mov1.png" />
+    <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
+</div>
+
+<div align="center">
+   <img width=" " src="img\mov2.png" />
+    <p> Figura x. Fluxograma da função que realiza o deslocamento das sprites.</p>
+</div>
+
 Após atualizar a coordenada x, a função retorna 0, sinalizando que a operação de movimentação foi concluída com sucesso. Em resumo, a função garante que o sprite se mova de forma controlada e fluida, conforme definido pela sua velocidade e direção.
 
 <div align="center">
