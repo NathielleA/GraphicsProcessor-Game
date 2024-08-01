@@ -176,11 +176,6 @@ Após o mapeamento, a função `munmap()` é usada para desmapear a memória, li
 
 Embora o mesmo método possa ser empregado para o acesso ao mouse, optou-se por utilizar a biblioteca `input.h`, que abstrai a complexidade do mapeamento direto da memória, oferecendo uma interface mais simplificada e eliminando a necessidade de processamento manual das informações obtidas.
 
-<div align="center">
-   <img width="" src="img\Mapeamento.png" />
-    <p> Figura x. Diagrama funcionamento de Threads.</p>
-</div>
-
 ### Implementação das Threads
 
 Para gerenciar os diversos dispositivos de entrada e saída, foi implementada uma abordagem baseada em múltiplas threads, permitindo a execução simultânea de tarefas críticas sem bloqueio e otimizando o desempenho do sistema. A seguir, detalhamos a função de cada thread no jogo.
