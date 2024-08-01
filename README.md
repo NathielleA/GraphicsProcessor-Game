@@ -438,5 +438,12 @@ A implementação de novas sprites e a gestão da memória gráfica na GPU aprim
 
 Em suma, **Croak Rush** é um exemplo notável de como a aplicação prática de conceitos teóricos, juntamente com o uso consciente da placa disponível pode resultar em um jogo coeso e divertido, destacando a importância da integração harmoniosa entre lógica de programação, design visual e uso do hardware.
 
+## Equipe
+
+- [Nathielle Cerqueira Alves](https://github.com/NathielleA)
+
+- [Yasmin Cordeiro de Souza Meira](https://github.com/yasmincsme)
+
 ## Referências
 
+- 
